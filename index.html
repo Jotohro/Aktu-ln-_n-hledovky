@@ -169,6 +169,11 @@
     <p class="hint" style="margin:6px 0 0">Vytáhne titulek a perex. Fotku nahraj zvlášť níž.</p>
   </fieldset>
 
+  <fieldset data-only="spotlight">
+    <legend>Varianta</legend>
+    <label class="check"><input type="checkbox" id="volby"> Volební speciál — štítek VOLBY 2026 pod logem</label>
+  </fieldset>
+
   <fieldset>
     <legend>Texty</legend>
     <label for="title">Titulek <span class="counter" id="cTitle">0</span></label>
@@ -284,7 +289,8 @@ const YT={
   nameSize:103, nameWeight:500, nameLead:126, nameBaseline:457,
   roleSize:52, roleWeight:400, roleBaseline:549,
   ring:{cx:1048,cy:17,r:194,thickness:77},
-  badgeSize:71, badgeWeight:400, badgeTrack:1.6, badgeBaseline:134, badgeRight:1166,
+  badgeSize:71, badgeWeight:400, badgeTrack:1.6, badgeBaseline:134,
+  pillTop:150, pillH:40, pillSize:30,
 };
 const IG={
   card:{x:57,y:483,w:956,h:578,r:30},
@@ -304,7 +310,7 @@ const PEREX_MARK="🔵 ";
 const IG_OUTRO_AKT="Celý článek najdete v biu @aktualne.cz";
 const IG_OUTRO="Celý rozhovor najdete na webu @aktualne.cz přes odkaz v BIO 👆 nebo ve vaší podcastové aplikaci 🎧";
 
-const S={img:null,fmt:"yt",mode:"spotlight",
+const S={img:null,fmt:"yt",mode:"spotlight",volby:false,
   tf:{yt:{zoom:100,x:0,y:0},ig:{zoom:100,x:0,y:0},st:{zoom:100,x:0,y:0}},
   frame:{yt:{w:1280,h:720},ig:{w:IG.card.w,h:IG.card.h},ig2:{w:IG.card.w,h:IG.card.h},st:{w:ST.card.w,h:ST.card.h}}};
 const $=id=>document.getElementById(id);
@@ -356,17 +362,29 @@ function fitWrap(ctx,text,{maxW,maxLines,max,min,weight,fam}){
    tamní osazení má nápis posazený pod středem prstence, který je z poloviny
    za horní hranou, a to hotový obrázek zastat nedokáže. */
 const RING_A="#6EABFE", RING_B="#423AC4";
-function drawRing(ctx,ring,size,weight,track,baseline,right){
+function drawRing(ctx,ring,size,weight,track,baseline){
   const g=ctx.createLinearGradient(ring.cx-ring.r,0,ring.cx+ring.r,0);
   g.addColorStop(0,RING_A); g.addColorStop(1,RING_B);
   ctx.save(); ctx.strokeStyle=g; ctx.lineWidth=ring.thickness;
   ctx.beginPath(); ctx.arc(ring.cx,ring.cy,ring.r-ring.thickness/2,0,Math.PI*2); ctx.stroke(); ctx.restore();
-  // nápis je prostrkaný, takže se sází po písmenech a zarovnává se zprava
+  // nápis je prostrkaný, takže se sází po písmenech; vodorovně na střed kruhu
   ctx.save(); ctx.fillStyle="#fff"; ctx.font=`${weight} ${size}px ${COND}`;
   ctx.textBaseline="alphabetic"; ctx.textAlign="left";
   const chars=[...BADGE], w=chars.map(c=>ctx.measureText(c).width);
-  let x=right-(w.reduce((a,b)=>a+b,0)+track*(chars.length-1));
+  let x=ring.cx-(w.reduce((a,b)=>a+b,0)+track*(chars.length-1))/2;
   chars.forEach((c,i)=>{ ctx.fillText(c,x,baseline); x+=w[i]+track; });
+  ctx.restore();
+}
+
+/* Volební speciál: žlutý štítek pod logem Spotlight. */
+const VOLBY_TXT="VOLBY 2026", VOLBY_BG="#FFD21F", VOLBY_FG="#191A50";
+function drawPill(ctx,cx,top,h,size){
+  ctx.save();
+  ctx.font=`700 ${size}px ${SEMI}`;
+  const padX=Math.round(size*0.47), w=ctx.measureText(VOLBY_TXT).width+padX*2;
+  ctx.fillStyle=VOLBY_BG; roundRect(ctx,cx-w/2,top,w,h,Math.round(h*0.15)); ctx.fill();
+  ctx.fillStyle=VOLBY_FG; ctx.textAlign="center"; ctx.textBaseline="middle";
+  ctx.fillText(VOLBY_TXT,cx,top+h/2+size*0.04);
   ctx.restore();
 }
 
@@ -392,7 +410,8 @@ function renderYT(){
   ctx.fillStyle=g; ctx.fillRect(YT.gradFrom,0,YT.gradTo-YT.gradFrom,H);
   ctx.fillStyle=PANEL; ctx.fillRect(YT.gradTo,0,W-YT.gradTo,H);
 
-  drawRing(ctx,YT.ring,YT.badgeSize,YT.badgeWeight,YT.badgeTrack,YT.badgeBaseline,YT.badgeRight);
+  drawRing(ctx,YT.ring,YT.badgeSize,YT.badgeWeight,YT.badgeTrack,YT.badgeBaseline);
+  if(S.volby) drawPill(ctx,YT.ring.cx,YT.pillTop,YT.pillH,YT.pillSize);
 
   ctx.textAlign="right"; ctx.textBaseline="alphabetic"; ctx.fillStyle="#fff";
   // jméno a příjmení: dva samostatné řádky, společná velikost podle delšího z nich
@@ -430,7 +449,10 @@ function renderIG(key,titleText,L){
   ctx.restore();
 
   {
-    drawBadge(ctx,{cx:k.x+k.w*L.ring.rel, cy:k.y+k.h*L.ring.relY, r:k.w*L.ring.rRel});
+    const ring={cx:k.x+k.w*L.ring.rel, cy:k.y+k.h*L.ring.relY, r:k.w*L.ring.rRel};
+    drawBadge(ctx,ring);
+    // v logu končí nápis na 0,149 r pod středem; štítek drží stejné poměry jako na YouTube
+    if(S.volby) drawPill(ctx,ring.cx,ring.cy+ring.r*0.26,Math.round(ring.r*0.28),Math.round(ring.r*0.21));
   }
 
   ctx.textAlign="left"; ctx.textBaseline="alphabetic"; ctx.fillStyle="#fff";
@@ -883,7 +905,7 @@ const FILE={yt:f=>`spotlight_nahledovka_YouTube_${f}`,
             st:f=>`spotlight_nahledovka_storicka_${f}`};
 function download(fmt){ cvs[fmt].toBlob(b=>{
   const a=document.createElement("a"); a.href=URL.createObjectURL(b);
-  a.download=FILE[fmt](slug())+".jpg"; a.click();
+  a.download=FILE[fmt](slug())+(S.volby?"_volby":"")+".jpg"; a.click();
   setTimeout(()=>URL.revokeObjectURL(a.href),2000); },"image/jpeg",0.95); }
 $("dl").addEventListener("click",()=>download(S.fmt));
 $("dlAll").addEventListener("click",()=>{
@@ -899,6 +921,8 @@ $("copy").addEventListener("click",async()=>{
 $("swap").addEventListener("click",()=>{
   const a=$("title").value; $("title").value=$("titleAlt").value; $("titleAlt").value=a;
   counters(); refreshCaptions(); render(); });
+
+$("volby").addEventListener("change",()=>{ S.volby=$("volby").checked; render(); });
 
 /* ---------- vstupy ---------- */
 
