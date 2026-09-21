@@ -171,7 +171,7 @@
 
   <fieldset data-only="spotlight">
     <legend>Varianta</legend>
-    <label class="check"><input type="checkbox" id="volby"> Volební speciál — štítek VOLBY 2026 pod logem</label>
+    <label class="check"><input type="checkbox" id="volby"> Spotlight Volby — žlutý štítek VOLBY pod logem</label>
   </fieldset>
 
   <fieldset>
@@ -362,25 +362,30 @@ function fitWrap(ctx,text,{maxW,maxLines,max,min,weight,fam}){
    tamní osazení má nápis posazený pod středem prstence, který je z poloviny
    za horní hranou, a to hotový obrázek zastat nedokáže. */
 const RING_A="#6EABFE", RING_B="#423AC4";
-function drawRing(ctx,ring,size,weight,track,baseline){
+
+function ringStroke(ctx,ring){
   const g=ctx.createLinearGradient(ring.cx-ring.r,0,ring.cx+ring.r,0);
-  g.addColorStop(0,RING_A); g.addColorStop(1,RING_B);
-  ctx.save(); ctx.strokeStyle=g; ctx.lineWidth=ring.thickness;
-  ctx.beginPath(); ctx.arc(ring.cx,ring.cy,ring.r-ring.thickness/2,0,Math.PI*2); ctx.stroke(); ctx.restore();
-  // nápis je prostrkaný, takže se sází po písmenech; vodorovně na střed kruhu
+  g.addColorStop(0,RING_A); g.addColorStop(1,RING_B); return g;
+}
+// nápis je prostrkaný, sází se po písmenech a vodorovně na střed
+function drawWordmark(ctx,cx,baseline,size,weight,track){
   ctx.save(); ctx.fillStyle="#fff"; ctx.font=`${weight} ${size}px ${COND}`;
   ctx.textBaseline="alphabetic"; ctx.textAlign="left";
   const chars=[...BADGE], w=chars.map(c=>ctx.measureText(c).width);
-  let x=ring.cx-(w.reduce((a,b)=>a+b,0)+track*(chars.length-1))/2;
+  let x=cx-(w.reduce((a,b)=>a+b,0)+track*(chars.length-1))/2;
   chars.forEach((c,i)=>{ ctx.fillText(c,x,baseline); x+=w[i]+track; });
   ctx.restore();
 }
+function drawRing(ctx,ring,size,weight,track,baseline){
+  ctx.save(); ctx.strokeStyle=ringStroke(ctx,ring); ctx.lineWidth=ring.thickness;
+  ctx.beginPath(); ctx.arc(ring.cx,ring.cy,ring.r-ring.thickness/2,0,Math.PI*2); ctx.stroke(); ctx.restore();
+  drawWordmark(ctx,ring.cx,baseline,size,weight,track);
+}
 
-/* Volební speciál: žlutý štítek pod logem Spotlight. */
-const VOLBY_TXT="VOLBY 2026", VOLBY_BG="#FFD21F", VOLBY_FG="#191A50";
-function drawPill(ctx,cx,top,h,size){
-  ctx.save();
-  ctx.font=`700 ${size}px ${SEMI}`;
+/* Spotlight Volby: původní barvy, pod logem žlutý štítek VOLBY. */
+const VOLBY_TXT="VOLBY", VOLBY_BG="#FFD21F", VOLBY_FG="#191A50";
+function drawVolbyPill(ctx,cx,top,h,size){
+  ctx.save(); ctx.font=`700 ${size}px ${SEMI}`;
   const padX=Math.round(size*0.47), w=ctx.measureText(VOLBY_TXT).width+padX*2;
   ctx.fillStyle=VOLBY_BG; roundRect(ctx,cx-w/2,top,w,h,Math.round(h*0.15)); ctx.fill();
   ctx.fillStyle=VOLBY_FG; ctx.textAlign="center"; ctx.textBaseline="middle";
@@ -411,7 +416,7 @@ function renderYT(){
   ctx.fillStyle=PANEL; ctx.fillRect(YT.gradTo,0,W-YT.gradTo,H);
 
   drawRing(ctx,YT.ring,YT.badgeSize,YT.badgeWeight,YT.badgeTrack,YT.badgeBaseline);
-  if(S.volby) drawPill(ctx,YT.ring.cx,YT.pillTop,YT.pillH,YT.pillSize);
+  if(S.volby) drawVolbyPill(ctx,YT.ring.cx,YT.pillTop,YT.pillH,YT.pillSize);
 
   ctx.textAlign="right"; ctx.textBaseline="alphabetic"; ctx.fillStyle="#fff";
   // jméno a příjmení: dva samostatné řádky, společná velikost podle delšího z nich
@@ -451,8 +456,8 @@ function renderIG(key,titleText,L){
   {
     const ring={cx:k.x+k.w*L.ring.rel, cy:k.y+k.h*L.ring.relY, r:k.w*L.ring.rRel};
     drawBadge(ctx,ring);
-    // v logu končí nápis na 0,149 r pod středem; štítek drží stejné poměry jako na YouTube
-    if(S.volby) drawPill(ctx,ring.cx,ring.cy+ring.r*0.26,Math.round(ring.r*0.28),Math.round(ring.r*0.21));
+    // v logu končí nápis na 0,149 r pod středem; štítek drží poměry z YouTube
+    if(S.volby) drawVolbyPill(ctx,ring.cx,ring.cy+ring.r*0.26,Math.round(ring.r*0.28),Math.round(ring.r*0.21));
   }
 
   ctx.textAlign="left"; ctx.textBaseline="alphabetic"; ctx.fillStyle="#fff";
