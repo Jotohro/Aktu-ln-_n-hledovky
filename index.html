@@ -175,16 +175,11 @@
 
   <fieldset>
     <legend>Článek</legend>
-    <label for="url">Odkaz na článek</label>
+    <label for="url">Odkaz na článek (klidně zkrácený aktln.cz)</label>
     <input type="url" id="url" placeholder="https://video.aktualne.cz/…">
     <div class="row" style="margin-top:9px"><button id="load">Načíst článek</button></div>
     <div class="status" id="st"></div>
-    <p class="hint" style="margin:6px 0 0">Vytáhne titulek a perex. Fotku nahraj zvlášť níž.</p>
-    <div data-only="show">
-      <label for="dilLink">Odkaz na celý díl</label>
-      <input type="url" id="dilLink" placeholder="http://aktln.cz/…">
-      <p class="hint" style="margin:6px 0 0">Jde na konec popisku na YouTube. Po načtení se sem dá odkaz na článek, přepiš ho zkráceným.</p>
-    </div>
+    <p class="hint" style="margin:6px 0 0">Vytáhne titulek a perex a odkaz vloží do popisků za ukazovák. Fotku nahraj zvlášť níž.</p>
   </fieldset>
 
   <fieldset data-only="spotlight">
@@ -523,19 +518,21 @@ function render(){ if(raf) cancelAnimationFrame(raf);
 /* ---------- popisky pro sítě ---------- */
 function refreshCaptions(){
   const raw=$("perex").value.trim();
+  const link=$("url").value.trim();
+  const finger="👉"+link;               // odkaz jde hned za ukazovák, stejně jako na YouTube
   if(S.mode==="aktualne"){
     // emoji si nese sám perex, kolečko se nepřidává — ukazovák u Facebooku zůstává
-    $("capFB").value = raw ? "👉\n\n"+raw : "";
+    $("capFB").value = raw ? finger+"\n\n"+raw : "";
     $("capIG").value = raw ? raw+"\n\n"+IG_OUTRO_AKT : "";
   }else if(SHOWS[S.mode]){
     const dot=SHOWS[S.mode].dot;
     const p=raw ? (raw.startsWith(dot) ? raw : dot+" "+raw) : "";
-    $("capFB").value = p ? "👉\n\n"+p : "";
+    $("capFB").value = p ? finger+"\n\n"+p : "";
     $("capIG").value = p ? p+"\n\n"+IG_OUTRO_SHOW : "";
-    $("capYT").value = p ? p+"\n\n"+YT_OUTRO_SHOW+$("dilLink").value.trim() : "";
+    $("capYT").value = p ? p+"\n\n"+YT_OUTRO_SHOW+link : "";
   }else{
     const p=raw ? (raw.startsWith(PEREX_MARK.trim()) ? raw : PEREX_MARK+raw) : "";
-    $("capFB").value = p ? "👉\n\n"+p : "";
+    $("capFB").value = p ? finger+"\n\n"+p : "";
     $("capIG").value = p ? p+"\n\n"+IG_OUTRO : "";
   }
   $("capTitle").value=$("title").value.trim();
@@ -803,7 +800,7 @@ $("load").addEventListener("click",async()=>{
 
   let url=$("url").value.trim();
   if(!url){ setStatus("Vlož odkaz na článek.","err"); return; }
-  if(!/^https?:\/\//i.test(url)){ url="https://"+url; $("url").value=url; }
+  if(!/^https?:\/\//i.test(url)) url="https://"+url;   // jen pro stažení, v popiscích zůstane, jak je napsaný
 
   const btn=$("load"), label=btn.textContent;
   loading=true; stopLoading=false; btn.textContent="Zastavit";
@@ -824,7 +821,6 @@ $("load").addEventListener("click",async()=>{
   if(got&&got.title) $("title").value=got.title;
   if(got&&got.alt) $("titleAlt").value=got.alt;
   if(got&&got.perex) $("perex").value=got.perex;
-  if(SHOWS[S.mode] && !$("dilLink").value.trim()) $("dilLink").value=url;
   counters(); refreshCaptions();
   if(S.mode==="spotlight") render();
 
@@ -968,7 +964,7 @@ $("copy").addEventListener("click",async()=>{
   catch(e){ $("barHint").textContent="Schránka není dostupná — použij stažení."; }
   setTimeout(()=>{$("barHint").textContent="Export ve full rozlišení, JPG kvalita 95 %.";},2500); });
 
-$("dilLink").addEventListener("input",refreshCaptions);
+$("url").addEventListener("input",refreshCaptions);
 $("swap").addEventListener("click",()=>{
   const a=$("title").value; $("title").value=$("titleAlt").value; $("titleAlt").value=a;
   counters(); refreshCaptions(); render(); });
