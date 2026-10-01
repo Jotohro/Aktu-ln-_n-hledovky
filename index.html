@@ -474,7 +474,7 @@ const SA={
   panel:{top:97,bottom:1724},
   wedge:{top:507,bottom:1286,slope:0.18},
   logo:{x:145,y:193,w:399,h:181},
-  guest:{w:400,h:430,right:1000,bottom:620},
+  guest:{w:420,h:470,right:1000,bottom:660},
   trio:{cx:545,bottom:1716},
   title:{cx:540,size:113,wdth:74,lead:160,bottom:1109},
   sub:{size:57,wdth:76,baseline:1229}
@@ -923,6 +923,17 @@ function renderSranda(){
   ctx.fillStyle=L.orange; ctx.fillRect(0,0,W,H);
   ctx.fillStyle=L.black;  ctx.fillRect(0,L.panel.top,W,L.panel.bottom-L.panel.top);
 
+  // host nahoře vpravo — kreslí se PŘED klínem, aby ho jeho šikmá hrana ořízla
+  if(S.img){
+    const iw=S.img.naturalWidth||S.img.width, ih=S.img.naturalHeight||S.img.height;
+    const tf=tfFor("sa"), z=tf.zoom/100;
+    const sc=Math.min(L.guest.w/iw,L.guest.h/ih)*z;
+    ctx.save(); ctx.beginPath(); ctx.rect(0,L.panel.top,W,L.panel.bottom-L.panel.top); ctx.clip();
+    ctx.drawImage(S.img, L.guest.right-iw*sc+(tf.x/100)*L.guest.w,
+                  L.guest.bottom-ih*sc+(tf.y/100)*L.guest.h, iw*sc, ih*sc);
+    ctx.restore();
+  }
+
   // žlutý klín přes celou šířku, horní i dolní hrana šikmo
   ctx.save(); ctx.fillStyle=L.yellow; ctx.beginPath();
   ctx.moveTo(0,L.wedge.top); ctx.lineTo(W,L.wedge.top+L.wedge.slope*W);
@@ -931,17 +942,6 @@ function renderSranda(){
   ctx.fillRect(0,0,W,H); ctx.restore();
 
   drawImgFit(ctx,SRA_IMG.logo,L.logo.x,L.logo.y,L.logo.w,L.logo.h);
-
-  // host nahoře vpravo, na černé ploše
-  if(S.img){
-    const iw=S.img.naturalWidth||S.img.width, ih=S.img.naturalHeight||S.img.height;
-    const tf=tfFor("sa"), z=tf.zoom/100;
-    const sc=Math.min(L.guest.w/iw,L.guest.h/ih)*z;
-    ctx.save(); ctx.beginPath(); ctx.rect(0,L.panel.top,W,L.wedge.top-L.panel.top+80); ctx.clip();
-    ctx.drawImage(S.img, L.guest.right-iw*sc+(tf.x/100)*L.guest.w,
-                  L.guest.bottom-ih*sc+(tf.y/100)*L.guest.h, iw*sc, ih*sc);
-    ctx.restore();
-  }
 
   // texty na žlutém klínu, černě, na střed
   const lines=strelLines();
