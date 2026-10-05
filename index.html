@@ -250,7 +250,7 @@
     <legend>Texty</legend>
     <label for="title">Titulek <span class="counter" id="cTitle">0</span></label>
     <textarea id="title" placeholder="Načte se z článku, nebo napiš ručně"></textarea>
-    <p class="hint" id="titleHint" style="margin:6px 0 0;display:none">Řádky dělíš Enterem. <b style="color:var(--text)">Hvězdička</b> na začátku řádku ho obarví červeně, bez ní je bílý.</p>
+    <p class="hint" id="titleHint" style="margin:6px 0 0;display:none">Terč v náhledu chytneš a přetáhneš, kolečkem nad ním ho zvětšíš, dvojklikem vrátíš. Řádky dělíš Enterem. <b style="color:var(--text)">Hvězdička</b> na začátku řádku ho obarví červeně, bez ní je bílý.</p>
     <label for="titleAlt" data-only="spotlight">Alternativní titulek <span class="counter" id="cAlt">0</span>
       <button class="ghost mini" id="swap" title="Prohodit s hlavním titulkem" style="float:right;padding:2px 8px;margin-top:-4px">⇅</button></label>
     <textarea id="titleAlt" data-only="spotlight" placeholder="Druhá varianta pro druhý instagramový příspěvek"></textarea>
@@ -434,7 +434,7 @@ const SR={
   bg:"#1E1E1E", red:"#E51827", cream:"#F1EEE5",
   word:{x:72,y:72,w:392,h:99},
   byline:{x:139,baseline:223,size:27,track:6,wdth:80},
-  cross:{x:519,y:47,w:183,h:184},
+  cross:{x:519,y:47,w:184,h:184},
   title:{x:76,maxW:820,size:76,lead:83,bottom:436,wdth:84},
   box:{x:151,pad:15,top:505},
   sub:{size:46,lead:44,wdth:100},
@@ -442,7 +442,7 @@ const SR={
   // varianta s hostem (odměřeno z návrhu s Pojarem, 2560→1280)
   duo:{
     word:{x:427,y:49,w:387,h:94}, byline:{x:494,baseline:199,size:26,track:6},
-    cross:{x:302,y:505,w:218,h:178},
+    cross:{x:302,y:505,w:180,h:180},
     guest:{w:400,h:620,left:0,bottom:720,wall:420},   // vpravo od 420 se host ořízne
     host:{w:400,h:583,right:1280,bottom:720,wall:830}, // Matyáš nesmí doleva od 830
     title:{cx:650,maxW:700,size:84,lead:88,bottom:469,wdth:78},
@@ -700,6 +700,19 @@ function renderYT(){
 
 /* ---------- Střelnice: YouTube 1280×720 ---------- */
 function drawImgFit(ctx,img,x,y,w,h){ if(ready(img)) ctx.drawImage(img,x,y,w,h); }
+/* Terč Střelnice si jde v náhledu chytit a posunout (tažením) nebo zvětšit
+   (kolečkem nad ním). Posun se pamatuje pro každý formát zvlášť. */
+S.cross={sy:{dx:0,dy:0,k:1},sr:{dx:0,dy:0,k:1}};
+function crossBase(fmt){
+  if(fmt==="sr") return SRR.cross;
+  return S.img ? SR.duo.cross : SR.cross;
+}
+function crossRect(fmt){
+  const b=crossBase(fmt), o=S.cross[fmt]||{dx:0,dy:0,k:1};
+  const w=b.w*o.k, h=b.h*o.k;
+  return {x:b.x+o.dx+(b.w-w)/2, y:b.y+o.dy+(b.h-h)/2, w, h};
+}
+function drawCross(ctx,fmt){ const r=crossRect(fmt); drawImgFit(ctx,STREL_IMG.cross,r.x,r.y,r.w,r.h); }
 /* Barvu řádku řídí výhradně hvězdička na jeho začátku: *řádek = červeně,
    bez hvězdičky bíle. Žádné automatické obarvování. */
 const titleText=()=>$("title").value.replace(/^\*\s*/gm,"");
@@ -722,7 +735,7 @@ function renderStrelnice(){
   }
 
   drawImgFit(ctx,STREL_IMG.word,SR.word.x,SR.word.y,SR.word.w,SR.word.h);
-  drawImgFit(ctx,STREL_IMG.cross,SR.cross.x,SR.cross.y,SR.cross.w,SR.cross.h);
+  drawCross(ctx,"sy");
 
   // MATYÁŠE ZRNA
   ctx.save(); ctx.fillStyle=SR.red; setArch(ctx,700,SR.byline.size,SR.byline.wdth);
@@ -778,7 +791,7 @@ function renderStrelDuo(ctx,W,H){
   ctx.save(); ctx.beginPath(); ctx.rect(L.host.wall,0,W-L.host.wall,H); ctx.clip();
   drawFig(ctx,hu,L.host,"right"); ctx.restore();
   drawImgFit(ctx,STREL_IMG.word,L.word.x,L.word.y,L.word.w,L.word.h);
-  drawImgFit(ctx,STREL_IMG.cross,L.cross.x,L.cross.y,L.cross.w,L.cross.h);
+  drawCross(ctx,"sy");
 
   ctx.save(); ctx.fillStyle=SR.red; setArch(ctx,700,L.byline.size,SR.byline.wdth);
   ctx.textBaseline="alphabetic"; ctx.textAlign="left";
@@ -825,7 +838,7 @@ function renderStrelReel(){
                   hu.naturalWidth*sc,hu.naturalHeight*sc);
   }
   drawImgFit(ctx,STREL_IMG.word,L.word.x,L.word.y,L.word.w,L.word.h);
-  drawImgFit(ctx,STREL_IMG.cross,L.cross.x,L.cross.y,L.cross.w,L.cross.h);
+  drawCross(ctx,"sr");
 
   // řádek nad logem
   ctx.save(); ctx.fillStyle="#fff"; setArch(ctx,700,L.claim.size,L.claim.wdth);
@@ -1764,8 +1777,15 @@ function syncSliders(){}   // posuvníky vyhozené, fotka se ovládá přímo v 
 const clamp=(v,lo,hi)=>Math.min(hi,Math.max(lo,v));
 Object.entries(cvs).forEach(([fmt,c])=>{
   let drag=null;
-  let paint=null;
-  c.addEventListener("pointerdown",e=>{ if(!S.img) return;
+  let paint=null, crossDrag=null;
+  const canvasPt=e=>{ const r=c.getBoundingClientRect(), k=c.width/r.width;
+    return {x:(e.clientX-r.left)*k, y:(e.clientY-r.top)*k, k}; };
+  const onCross=e=>{ if(!S.cross[fmt]) return false; const p=canvasPt(e), r=crossRect(fmt);
+    return p.x>=r.x&&p.x<=r.x+r.w&&p.y>=r.y&&p.y<=r.y+r.h; };
+  c.addEventListener("pointerdown",e=>{
+    if(onCross(e)&&!e.shiftKey){ const p=canvasPt(e), o=S.cross[fmt];
+      crossDrag={px:p.x,py:p.y,dx:o.dx,dy:o.dy}; c.setPointerCapture(e.pointerId); return; }
+    if(!S.img) return;
     if(e.shiftKey){                       // Shift = gumování místo posouvání
       const p0=(()=>{ ensureCanvas(); return toImg(c,fmt,e); })();
       if(!p0) return;                     // tenhle formát fotku nekreslí
@@ -1776,6 +1796,9 @@ Object.entries(cvs).forEach(([fmt,c])=>{
     c.setPointerCapture(e.pointerId); c.classList.add("dragging");
     const t=S.tf[tfKey(fmt)]; drag={px:e.clientX,py:e.clientY,x:t.x,y:t.y}; });
   c.addEventListener("pointermove",e=>{
+    if(crossDrag){ const p=canvasPt(e), o=S.cross[fmt];
+      o.dx=crossDrag.dx+(p.x-crossDrag.px); o.dy=crossDrag.dy+(p.y-crossDrag.py); render(); return; }
+    c.style.cursor=(S.cross[fmt]&&onCross(e)&&!e.shiftKey)?"move":"";
     liveCursor(c,e,e.shiftKey&&!!S.img);
     if(paint){ const p=toImg(c,fmt,e); if(p){ liveStroke(paint.last,p,paint.restore); paint.last=p; } return; }
     if(!drag) return;
@@ -1783,17 +1806,23 @@ Object.entries(cvs).forEach(([fmt,c])=>{
     t.x=clamp(drag.x+((e.clientX-drag.px)*scale/f.w)*100,-100,100);
     t.y=clamp(drag.y+((e.clientY-drag.py)*scale/f.h)*100,-100,100);
     if(tfKey(fmt)===tfKey(S.fmt)) syncSliders(); render(); });
-  const stop=e=>{ if(paint){ paint=null; try{c.releasePointerCapture(e.pointerId);}catch(_){} }
+  const stop=e=>{ if(crossDrag){ crossDrag=null; try{c.releasePointerCapture(e.pointerId);}catch(_){} return; }
+    if(paint){ paint=null; try{c.releasePointerCapture(e.pointerId);}catch(_){} }
     if(!drag) return; drag=null; c.classList.remove("dragging");
     try{c.releasePointerCapture(e.pointerId);}catch(_){}};
   c.addEventListener("pointerup",stop); c.addEventListener("pointercancel",stop);
-  c.addEventListener("wheel",e=>{ if(!S.img) return; e.preventDefault();
+  c.addEventListener("wheel",e=>{
+    if(S.cross[fmt]&&onCross(e)&&!e.shiftKey){ e.preventDefault(); const o=S.cross[fmt];
+      o.k=clamp(o.k*(e.deltaY<0?1.06:0.94),0.4,2.5); render(); return; }
+    if(!S.img) return; e.preventDefault();
     if(e.shiftKey){ S.brush=clamp(S.brush-Math.sign(e.deltaY)*6,6,300);
       $("brush").value=S.brush; $("vBrush").value=S.brush; liveCursor(c,e,true); return; }
     const t=S.tf[tfKey(fmt)]; t.zoom=clamp(t.zoom-Math.sign(e.deltaY)*4,25,400);
     if(tfKey(fmt)===tfKey(S.fmt)) syncSliders(); render(); },{passive:false});
   c.addEventListener("click",()=>{ if(!S.img) $("file").click(); });
-  c.addEventListener("dblclick",()=>{ S.tf[tfKey(fmt)]={zoom:fmt==="yt"?80:100,x:0,y:0};
+  c.addEventListener("dblclick",e=>{
+    if(S.cross[fmt]&&onCross(e)){ S.cross[fmt]={dx:0,dy:0,k:1}; render(); return; }
+    S.tf[tfKey(fmt)]={zoom:fmt==="yt"?80:100,x:0,y:0};
     if(tfKey(fmt)===tfKey(S.fmt)) syncSliders(); render(); });
 });
 
