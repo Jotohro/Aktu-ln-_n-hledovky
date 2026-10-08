@@ -717,8 +717,9 @@ function drawCross(ctx,fmt){ const r=crossRect(fmt); drawImgFit(ctx,STREL_IMG.cr
    bez hvězdičky bíle. Žádné automatické obarvování. */
 const titleText=()=>$("title").value.replace(/^\*\s*/gm,"");
 function strelLines(){
+  // titulky Střelnice a Srandy jsou vždy verzálkami, piš je klidně malými
   return $("title").value.split("\n").map(l=>l.trim()).filter(Boolean)
-    .map(l=>({ text:l.replace(/^\*\s*/,""), red:l.startsWith("*") }));
+    .map(l=>({ text:l.replace(/^\*\s*/,"").toUpperCase(), red:l.startsWith("*") }));
 }
 function renderStrelnice(){
   const c=cvs.sy, ctx=c.getContext("2d"), W=c.width, H=c.height;
