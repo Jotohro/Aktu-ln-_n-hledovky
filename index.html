@@ -209,7 +209,7 @@
   </header>
 
   <fieldset>
-    <legend>Článek <span class="hint" id="ver" style="font-weight:400">v 2026-10-12f</span></legend>
+    <legend>Článek <span class="hint" id="ver" style="font-weight:400">v 2026-10-13c</span></legend>
     <label for="url">Odkaz na článek (klidně zkrácený aktln.cz)</label>
     <input type="url" id="url" placeholder="https://video.aktualne.cz/…">
     <div class="row" style="margin-top:9px"><button id="load">Načíst článek</button></div>
@@ -310,6 +310,14 @@
 <aside class="right">
   <button class="back" data-back>← Zpět na rozcestí</button>
   <h1><span></span>Popisky</h1>
+  <fieldset>
+    <legend>Postupné kopírování pro Metricool</legend>
+    <div class="row">
+      <button id="stepCopy" style="flex:1">Do schránky: Facebook / X</button>
+      <button class="ghost mini" id="stepReset" title="Začít znovu od Facebooku">↺</button>
+    </div>
+    <p class="hint" style="margin:6px 0 0">Každé kliknutí dá do schránky další text v pořadí Facebook → Instagram → YouTube → tagy. Po vložení do Metricoolu klikni znovu.</p>
+  </fieldset>
 
   <fieldset>
     <legend>Facebook / X</legend>
@@ -889,8 +897,10 @@ function renderStrelDuo(ctx,W,H){
   if(name){
     setArch(ctx,700,L.box.size,L.box.wdth);
     const w=archWidth(ctx,name)+L.box.padX*2;
-    boxCx=L.box.left+w/2;
-    ctx.fillStyle=SR.red; ctx.fillRect(L.box.left,L.box.top,w,L.box.h);
+    // jmenovka je vždy na středu pod titulkem; terč si uživatel posune sám
+    const left=L.title.cx-w/2;
+    boxCx=L.title.cx;
+    ctx.fillStyle=SR.red; ctx.fillRect(left,L.box.top,w,L.box.h);
     ctx.fillStyle="#fff"; archText(ctx,name,boxCx,L.box.top+L.box.capTop+L.box.size*0.72);
   }
   const role=$("role").value.split("\n").map(l=>l.trim()).filter(Boolean);
@@ -1145,6 +1155,7 @@ function render(){ if(raf) cancelAnimationFrame(raf);
 
 /* ---------- popisky pro sítě ---------- */
 function refreshCaptions(){
+  stepIdx=0; setTimeout(stepLabel,0);
   const tagsStr=tagLine();                 // naplní i řádek ke zkopírování, i bez perexu
   const raw=$("perex").value.trim();
   const link=$("url").value.trim();
@@ -1180,6 +1191,28 @@ function capCounts(){
   $("cYT").style.color=yt>5000?"var(--warn)":"var(--dim)";
 }
 ["capFB","capIG","capYT"].forEach(id=>$(id).addEventListener("input",capCounts));
+/* Metricool chce popisky pro každou síť zvlášť: jedno tlačítko, které při každém
+   kliknutí zkopíruje další text v pořadí. Prázdné položky přeskakuje. */
+const STEPS=[["capFB","Facebook / X"],["capIG","Instagram"],["capYT","YouTube"],["tagOut","tagy"]];
+let stepIdx=0;
+function stepAvail(){ return STEPS.filter(([id])=>{ const el=$(id); if(!el||!el.value.trim()) return false;
+  const fs=el.closest("fieldset"); return !fs || getComputedStyle(fs).display!=="none"; }); }
+function stepLabel(){
+  const list=stepAvail(); if(!list.length){ $("stepCopy").textContent="Nejdřív načti článek"; return; }
+  if(stepIdx>=list.length) stepIdx=0;
+  $("stepCopy").textContent="Do schránky: "+list[stepIdx][1]+"  ("+(stepIdx+1)+"/"+list.length+")";
+}
+$("stepCopy").addEventListener("click",async()=>{
+  const list=stepAvail(); if(!list.length) return;
+  if(stepIdx>=list.length) stepIdx=0;
+  const [id,name]=list[stepIdx];
+  try{ await navigator.clipboard.writeText($(id).value);
+    stepIdx++; const done=stepIdx>=list.length;
+    $("stepCopy").textContent=name+" zkopírováno → "+(done?"hotovo, další klik začne znovu":"další: "+list[stepIdx][1]);
+    if(done) stepIdx=0;
+  }catch(e){ $("stepCopy").textContent="Schránka odmítla — zkopíruj ručně"; }
+});
+$("stepReset").addEventListener("click",()=>{ stepIdx=0; stepLabel(); });
 document.querySelectorAll("[data-copy]").forEach(b=>b.addEventListener("click",async()=>{
   const el=$(b.dataset.copy), old=b.textContent;
   try{ await navigator.clipboard.writeText(el.value); b.textContent="Zkopírováno"; }
