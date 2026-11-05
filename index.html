@@ -216,7 +216,7 @@
   </header>
 
   <fieldset>
-    <legend>Článek <span class="hint" id="ver" style="font-weight:400">v 2026-11-04a</span></legend>
+    <legend>Článek <span class="hint" id="ver" style="font-weight:400">v 2026-11-05a</span></legend>
     <label for="url">Odkaz na článek (klidně zkrácený aktln.cz)</label>
     <input type="url" id="url" placeholder="https://video.aktualne.cz/…">
     <div class="row" style="margin-top:9px"><button id="load">Načíst článek</button></div>
@@ -1968,6 +1968,12 @@ function imgMap(fmt){
     return {s, dx:b.left+(tf.x/100)*b.w, dy:b.bottom-ih*s+(tf.y/100)*b.h};
   }
   if(fmt==="sr") return null;         // v reelsku Střelnice se host nekreslí
+  if(fmt==="sa"||fmt==="say"){        // Sranda: host vpravo nahoře, zarovnaný na pravý a spodní okraj boxu
+    const b=(fmt==="sa"?SA:SAY).guest, tf=tfFor(fmt);
+    const s=Math.min(b.w/iw,b.h/ih)*(tf.zoom/100);
+    return {s, dx:b.right-iw*s+(tf.x/100)*b.w, dy:b.bottom-ih*s+(tf.y/100)*b.h};
+  }
+  if(fmt==="si"||fmt==="sir"||fmt==="mw"||fmt==="mr") return null;   // tyhle formáty výřez nepoužívají
   const r=photoRect(fmt), tf=tfFor(fmt);
   const contain=((fmt==="yt"||fmt==="reel")&&S.alpha);
   const s=(contain?Math.min(r.w/iw,r.h/ih):Math.max(r.w/iw,r.h/ih))*(tf.zoom/100);
