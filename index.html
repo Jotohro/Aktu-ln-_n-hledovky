@@ -216,7 +216,7 @@
   </header>
 
   <fieldset>
-    <legend>Článek <span class="hint" id="ver" style="font-weight:400">v 2026-11-05a</span></legend>
+    <legend>Článek <span class="hint" id="ver" style="font-weight:400">v 2026-11-11b</span></legend>
     <label for="url">Odkaz na článek (klidně zkrácený aktln.cz)</label>
     <input type="url" id="url" placeholder="https://video.aktualne.cz/…">
     <div class="row" style="margin-top:9px"><button id="load">Načíst článek</button></div>
@@ -256,6 +256,13 @@
 
   <fieldset data-only="spotlight">
     <legend>Varianta</legend>
+    <label for="magAlign" data-only="magazin">Zarovnání textů</label>
+    <select id="magAlign" data-only="magazin"><option value="right">Doprava (jako ve vzoru)</option><option value="left">Doleva</option></select>
+    <label for="magTitleSize" data-only="magazin">Velikost titulku <span class="counter" id="magTitleSizeV">100 %</span></label>
+    <input type="range" id="magTitleSize" data-only="magazin" min="50" max="140" value="100">
+    <label for="magSubSize" data-only="magazin">Velikost podtitulku <span class="counter" id="magSubSizeV">100 %</span></label>
+    <input type="range" id="magSubSize" data-only="magazin" min="50" max="160" value="100">
+    <p class="hint" data-only="magazin" style="margin:0 0 8px">Řádky titulku i podtitulku dělíš Enterem. Velikost platí pro web i reels.</p>
     <label for="magLogo" data-only="magazin">Logo Aktuálně vpravo nahoře (jen web)</label>
     <select id="magLogo" data-only="magazin"><option value="white">Bílé</option><option value="blue">Modré</option><option value="dark">Tmavé</option><option value="none">Bez loga</option></select>
     <label class="check"><input type="checkbox" id="volby"> Spotlight Volby — žlutý štítek VOLBY pod logem</label>
@@ -999,17 +1006,17 @@ const MAG={
   web:{
     box1:{right:1010, bottom:426},            // bottom = poslední účaří titulku + 76
     box2:{top:554, right:899},                // top = spodek boxu 1 + 128
-    title:{right:935, base:211, size:140, lead:139},
-    kicker:{right:933, base:60, size:94},     // "magazín:"
-    sub:{right:825, base:696, size:84, lead:95},   // base = top boxu 2 + 142
+    title:{right:935, left:168, base:211, size:140, lead:139},
+    kicker:{right:933, left:170, base:60, size:94},     // "magazín:"
+    sub:{right:825, left:230, base:696, size:84, lead:95},   // base = top boxu 2 + 142
     logo:{x:1551,y:95,w:273,h:87}
   },
   reel:{
     box1:{top:835, bottom:1329, right:1200},
     box2:{top:1382, right:860},
-    title:{right:1001, base:1114, size:140, lead:139},
-    kicker:{right:1000, base:962, size:94},
-    sub:{right:800, base:1524, size:84, lead:95}
+    title:{right:1001, left:234, base:1114, size:140, lead:139},
+    kicker:{right:1000, left:236, base:962, size:94},
+    sub:{right:800, left:284, base:1524, size:84, lead:95}
   }
 };
 const MAG_IMG={logo1:new Image(), logo2:new Image()};
@@ -1030,25 +1037,32 @@ function magDraw(ctx,W,H,L,withLogo){
   ctx.fillStyle="#222"; ctx.fillRect(0,0,W,H);
   magPhoto(ctx,withLogo?"mw":"mr",W,H);
   const title=magLines("title").map(l=>l.toUpperCase()), sub=magLines("titleAlt");
+  const kT=(+$("magTitleSize").value||100)/100, kS=(+$("magSubSize").value||100)/100;
+  // zmenšený/zvětšený titulek: škáluje se písmo i proklad, první účaří zůstává
+  L={...L, title:{...L.title, size:L.title.size*kT, lead:L.title.lead*kT},
+           sub:{...L.sub, size:L.sub.size*kS, lead:L.sub.lead*kS}};
   ctx.save(); ctx.rotate(MAG.ang*Math.PI/180);
   // box 1 roste s počtem řádků titulku
   const lastBase=L.title.base+Math.max(0,title.length-1)*L.title.lead;
-  const b1bottom=(L.box1.bottom!=null && L.box1.top!=null) ? L.box1.bottom+Math.max(0,title.length-2)*L.title.lead : lastBase+76;
+  const lastBase0=L.title.base+L.title.lead/kT;          // kde by bylo účaří 2. řádku ve 100 %
+  const b1bottom=(L.box1.bottom!=null && L.box1.top!=null) ? L.box1.bottom+(lastBase-lastBase0) : lastBase+76;
   const b1top=(L.box1.top!=null)?L.box1.top:-3000;
   ctx.fillStyle=`rgba(255,255,255,${MAG.boxAlpha})`;
   ctx.fillRect(-3000,b1top,L.box1.right+3000,b1bottom-b1top);
   // box 2 pod ním
-  const b2top=(L.box2.top!=null && L.box1.top!=null) ? L.box2.top+Math.max(0,title.length-2)*L.title.lead : b1bottom+128;
+  const b2top=(L.box2.top!=null && L.box1.top!=null) ? L.box2.top+(lastBase-lastBase0) : b1bottom+128;
   ctx.fillRect(-3000,b2top,L.box2.right+3000,4000);
-  // texty, zarovnané doprava
-  ctx.textAlign="right"; ctx.textBaseline="alphabetic";
+  // texty: zarovnání doprava (vzor) nebo doleva podle přepínače
+  const left=$("magAlign").value==="left";
+  const ax=o=>left?o.left:o.right;
+  ctx.textAlign=left?"left":"right"; ctx.textBaseline="alphabetic";
   ctx.font=`italic 700 ${L.kicker.size}px ${MAG.font}`; ctx.fillStyle=MAG.red;
-  ctx.fillText("magazín:",L.kicker.right,L.kicker.base);
+  ctx.fillText("magazín:",ax(L.kicker),L.kicker.base);
   ctx.font=`700 ${L.title.size}px ${MAG.font}`; ctx.fillStyle=MAG.blue;
-  title.forEach((l,i)=>ctx.fillText(l,L.title.right,L.title.base+i*L.title.lead));
+  title.forEach((l,i)=>ctx.fillText(l,ax(L.title),L.title.base+i*L.title.lead));
   ctx.font=`italic 500 ${L.sub.size}px ${MAG.font}`; ctx.fillStyle="#111";
-  const subBase=(L.box2.top!=null && L.box1.top!=null) ? L.sub.base+Math.max(0,title.length-2)*L.title.lead : b2top+142;
-  sub.forEach((l,i)=>ctx.fillText(l,L.sub.right,subBase+i*L.sub.lead));
+  const subBase=(L.box2.top!=null && L.box1.top!=null) ? L.sub.base+(lastBase-lastBase0) : b2top+142;
+  sub.forEach((l,i)=>ctx.fillText(l,ax(L.sub),subBase+i*L.sub.lead));
   ctx.restore(); ctx.textAlign="left";
   if(withLogo && $("magLogo").value!=="none" && ready(MAG_IMG.logo1) && ready(MAG_IMG.logo2)){
     const v=$("magLogo").value, g=L.logo;
@@ -2189,6 +2203,8 @@ $("copy").addEventListener("click",async()=>{
 
 $("url").addEventListener("input",refreshCaptions);
 $("magLogo").addEventListener("change",()=>render());
+$("magAlign").addEventListener("change",()=>render());
+["magTitleSize","magSubSize"].forEach(id=>$(id).addEventListener("input",()=>{ $(id+"V").textContent=$(id).value+" %"; render(); }));
 $("tagTable").addEventListener("input",()=>{ try{ localStorage.setItem(TAG_KEY,$("tagTable").value); }catch(e){} refreshCaptions(); });
 /* žádní pevní lidé u pořadů — v uloženém seznamu se nechá jen profil Spotlightu */
 function cleanTagTable(t){ return t.split("\n").filter(l=>!/^\s*\[(?!spotlight\]|prskavky\])/i.test(l)).join("\n"); }
