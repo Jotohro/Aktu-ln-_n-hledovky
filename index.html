@@ -211,7 +211,7 @@
   </header>
 
   <fieldset>
-    <legend>Článek <span class="hint" id="ver" style="font-weight:400">v 2026-11-12e</span></legend>
+    <legend>Článek <span class="hint" id="ver" style="font-weight:400">v 2026-11-12g</span></legend>
     <label for="url">Odkaz na článek (klidně zkrácený aktln.cz)</label>
     <input type="url" id="url" placeholder="https://video.aktualne.cz/…">
     <div class="row" style="margin-top:9px"><button id="load">Načíst článek</button></div>
@@ -277,7 +277,7 @@
     <textarea id="title" placeholder="Načte se z článku, nebo napiš ručně"></textarea>
     <p class="hint" id="titleHint" style="margin:6px 0 0;display:none">Terč v náhledu chytneš a přetáhneš, kolečkem nad ním ho zvětšíš, dvojklikem vrátíš. Řádky dělíš Enterem. <b style="color:var(--text)">Hvězdička</b> na začátku řádku ho obarví červeně, bez ní je bílý.</p>
     <label for="titleAlt" data-modes="sranda sikana magazin">Podtitulek <span class="counter" id="cAlt">0</span>
-      <button class="ghost mini" id="swap" title="Prohodit s hlavním titulkem" style="float:right;padding:2px 8px;margin-top:-4px">⇅</button></label>
+</label>
     <textarea id="titleAlt" data-modes="sranda sikana magazin" placeholder="podtitulek na náhledovce — Enterem zalomíš"></textarea>
     <label for="perex">Perex <span class="counter" id="cPerex">0</span> <button class="ghost mini" data-emoji="perex" title="Vložit emoji" style="float:right;padding:2px 8px;margin-top:-4px">😀</button></label>
     <textarea id="perex" placeholder="Načte se z článku — z něj se skládají popisky vpravo"></textarea>
@@ -1050,8 +1050,11 @@ function magDraw(ctx,W,H,L,withLogo){
   ctx.fillStyle="#222"; ctx.fillRect(0,0,W,H);
   magPhoto(ctx,withLogo?"mw":"mr",W,H);
   const title=magLines("title").map(l=>l.toUpperCase()), sub=magLines("titleAlt");
-  // zmenšený/zvětšený titulek: škáluje se písmo i proklad, první účaří zůstává
+  // zmenšený/zvětšený titulek: škáluje se písmo i proklad, první účaří zůstává;
+  // co je NAD ním ("magazín:" a horní hrana boxu v reelsu) odstupuje úměrně velikosti
   const kTm=kT(); L=scaleL(L);
+  L.kicker={...L.kicker, base:L.title.base-(L.title.base-L.kicker.base)*kTm};
+  if(L.box1.top!=null) L.box1={...L.box1, top:L.title.base-(L.title.base-L.box1.top)*kTm};
   ctx.save(); ctx.rotate(MAG.ang*Math.PI/180);
   // box 1 roste s počtem řádků titulku
   const lastBase=L.title.base+Math.max(0,title.length-1)*L.title.lead;
@@ -1160,7 +1163,11 @@ function renderSrandaYT(){
   lines.forEach((o,i)=>archText(ctx,o.text,L.title.cx,L.title.first+i*L.title.lead));
   const sub=$("titleAlt").value.split("\n").map(l=>l.trim()).filter(Boolean)[0];
   if(sub){ setArch(ctx,700,L.sub.size,L.sub.wdth);
-    archText(ctx,sub.toUpperCase(),L.title.cx,L.sub.baseline+(lines.length-2)*L.title.lead); }
+    // podtitulek sedí pevnou mezeru pod POSLEDNÍM řádkem titulku (v návrhu 65 px při dvou řádcích),
+    // mezera se škáluje s titulkem, takže zvětšený titulek ho odsune
+    const lastBase=L.title.first+Math.max(0,lines.length-1)*L.title.lead;
+    const gap=(SAY.sub.baseline-SAY.title.first-SAY.title.lead)*kT();
+    archText(ctx,sub.toUpperCase(),L.title.cx,lastBase+gap); }
   ctx.restore(); ctx.textAlign="left"; archOff(ctx);
 
   drawImgFit(ctx,SRA_IMG.logo,L.logo.x,L.logo.y,L.logo.w,L.logo.h);
@@ -1204,7 +1211,7 @@ function renderSranda(){
   // malý řádek dole bere Alternativní titulek
   const sub=$("titleAlt").value.split("\n").map(l=>l.trim()).filter(Boolean)[0];
   if(sub){ setArch(ctx,700,L.sub.size,L.sub.wdth);
-    archText(ctx,sub.toUpperCase(),L.title.cx,L.sub.baseline); }
+    archText(ctx,sub.toUpperCase(),L.title.cx,SA.title.bottom+(SA.sub.baseline-SA.title.bottom)*Math.max(1,kS())); }
   ctx.textAlign="left"; archOff(ctx);
 
   // trojice moderátorů dole, pevně
@@ -2233,9 +2240,7 @@ try{ const t=localStorage.getItem(TAG_KEY);
 }catch(e){ $("tagTable").value=DEFAULT_TAGS; }
 $("tagReset").addEventListener("click",()=>{ $("tagTable").value=DEFAULT_TAGS;
   try{ localStorage.removeItem(TAG_KEY); }catch(e){} refreshCaptions(); });
-$("swap").addEventListener("click",()=>{
-  const a=$("title").value; $("title").value=$("titleAlt").value; $("titleAlt").value=a;
-  counters(); refreshCaptions(); render(); });
+
 
 $("volby").addEventListener("change",()=>{ S.volby=$("volby").checked; render(); });
 
