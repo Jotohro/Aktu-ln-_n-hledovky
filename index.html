@@ -75,7 +75,7 @@
   .stage{position:relative}
   #gridOverlay{position:absolute;pointer-events:none;display:none;border-top:2px dashed rgba(255,255,255,.75);border-bottom:2px dashed rgba(255,255,255,.75);
     box-shadow:0 0 0 9999px rgba(0,0,0,.35);}
-  #gridOverlay::after{content:"mřížka Instagramu 4:5";position:absolute;right:8px;top:6px;font:600 11px/1 system-ui,sans-serif;color:#fff;opacity:.8;letter-spacing:.04em}
+  #gridOverlay::after{content:"mřížka Instagramu 4:5";position:absolute;right:8px;top:-18px;font:600 11px/1 system-ui,sans-serif;color:#fff;opacity:.8;letter-spacing:.04em}
   .stage{flex:1;display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto;
     background:linear-gradient(45deg,#0A0F28 25%,transparent 25%) -10px 0/20px 20px,
       linear-gradient(-45deg,#0A0F28 25%,transparent 25%) -10px 0/20px 20px,var(--ink)}
@@ -205,7 +205,7 @@
       </button>
       <button class="tile akt" data-mode="aktualne">
         <span class="badge"><img alt="Aktuálně.cz" src="data:image/png;base64,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"></span>
-        <b>Aktuálně</b><i>popisky na sítě<br>z odkazu na článek</i>
+        <b>Aktuálně</b><i>zprávy, sport, auto…<br>náhledovka + popisky</i>
       </button>
     </div>
   </div>
@@ -219,7 +219,7 @@
   </header>
 
   <fieldset>
-    <legend>Článek <span class="hint" id="ver" style="font-weight:400">v 2026-11-13d</span></legend>
+    <legend>Článek <span class="hint" id="ver" style="font-weight:400">v 2026-11-13z3</span></legend>
     <label for="url">Odkaz na článek (klidně zkrácený aktln.cz)</label>
     <input type="url" id="url" placeholder="https://video.aktualne.cz/…">
     <div class="row" style="margin-top:9px"><button id="load">Načíst článek</button></div>
@@ -227,7 +227,7 @@
     <p class="hint" style="margin:6px 0 0">Vytáhne titulek a perex a odkaz vloží do popisků za ukazovák. Fotku nahraj zvlášť níž.</p>
   </fieldset>
 
-  <fieldset data-modes="spotlight strelnice sranda magazin strunc">
+  <fieldset data-modes="spotlight strelnice sranda magazin strunc aktualne">
     <legend id="fotoLegend">Fotka</legend>
     <div class="row"><button id="pickFile">Vybrat fotku</button></div>
     <input type="file" id="file" accept="image/*" hidden>
@@ -257,8 +257,9 @@
     <div class="status" id="cutSt"></div>
   </fieldset>
 
-  <fieldset data-modes="spotlight magazin">
+  <fieldset data-modes="spotlight magazin aktualne">
     <legend>Varianta</legend>
+    <input type="hidden" id="rubrika" value="domaci"><input type="hidden" id="vidLen" value="">
     <label for="magAlign" data-only="magazin">Zarovnání textů</label>
     <select id="magAlign" data-only="magazin"><option value="right">Doprava (jako ve vzoru)</option><option value="left">Doleva</option></select>
     <label for="magLogo" data-only="magazin">Logo Aktuálně vpravo nahoře (jen web)</label>
@@ -268,13 +269,13 @@
 
   <fieldset>
     <legend>Texty</legend>
-    <div data-modes="spotlight strelnice sranda sikana magazin strunc" class="fs-wrap">
+    <div data-modes="spotlight strelnice sranda sikana magazin strunc aktualne" class="fs-wrap">
       <div class="two">
         <div>
           <label for="fsTitle">Velikost titulku <span class="counter" id="fsTitleV">100 %</span></label>
           <div class="row" style="gap:6px"><input type="range" id="fsTitle" min="50" max="150" value="100" style="flex:1"><button class="ghost mini" id="fsResetT" title="Vrátit na 100 %">Výchozí</button></div>
         </div>
-        <div data-modes="strelnice sranda sikana magazin strunc">
+        <div data-modes="strelnice sranda sikana magazin strunc aktualne">
           <label for="fsSub">Velikost podtitulku <span class="counter" id="fsSubV">100 %</span></label>
           <div class="row" style="gap:6px"><input type="range" id="fsSub" min="50" max="160" value="100" style="flex:1"><button class="ghost mini" id="fsResetS" title="Vrátit na 100 %">Výchozí</button></div>
         </div>
@@ -284,9 +285,9 @@
     <label for="title">Titulek <span class="counter" id="cTitle">0</span></label>
     <textarea id="title" placeholder="Načte se z článku, nebo napiš ručně"></textarea>
     <p class="hint" id="titleHint" style="margin:6px 0 0;display:none">Terč v náhledu chytneš a přetáhneš, kolečkem nad ním ho zvětšíš, dvojklikem vrátíš. Řádky dělíš Enterem. <b style="color:var(--text)">Hvězdička</b> na začátku řádku ho obarví červeně, bez ní je bílý.</p>
-    <label for="titleAlt" data-modes="sranda sikana magazin">Podtitulek <span class="counter" id="cAlt">0</span>
+    <label for="titleAlt" data-modes="sranda sikana magazin aktualne">Podtitulek <span class="counter" id="cAlt">0</span>
 </label>
-    <textarea id="titleAlt" data-modes="sranda sikana magazin" placeholder="podtitulek na náhledovce — Enterem zalomíš"></textarea>
+    <textarea id="titleAlt" data-modes="sranda sikana magazin aktualne" placeholder="podtitulek na náhledovce — Enterem zalomíš"></textarea>
     <label for="perex">Perex <span class="counter" id="cPerex">0</span> <button class="ghost mini" data-emoji="perex" title="Vložit emoji" style="float:right;padding:2px 8px;margin-top:-4px">😀</button></label>
     <textarea id="perex" placeholder="Načte se z článku — z něj se skládají popisky vpravo"></textarea>
     <p class="hint" id="perexHint" style="margin:4px 0 0"></p>
@@ -312,6 +313,8 @@
       <button class="tab" role="tab" id="tab-say" data-fmt="say" aria-selected="false" data-show="sranda">YouTube</button>
       <button class="tab" role="tab" id="tab-si" data-fmt="si" aria-selected="false" data-show="sikana">YouTube</button>
       <button class="tab" role="tab" id="tab-sir" data-fmt="sir" aria-selected="false" data-show="sikana">Reels</button>
+      <button class="tab" role="tab" id="tab-zr" data-fmt="zr" aria-selected="false" data-show="aktualne">Reels 1080×1920</button>
+      <button class="tab" role="tab" id="tab-zw" data-fmt="zw" aria-selected="false" data-show="aktualne">Web 1920×1080</button>
       <button class="tab" role="tab" id="tab-ow" data-fmt="ow" aria-selected="false" data-show="strunc">Web 1920×1080</button>
       <button class="tab" role="tab" id="tab-or" data-fmt="or" aria-selected="false" data-show="strunc">Reels 1080×1920</button>
       <button class="tab" role="tab" id="tab-mw" data-fmt="mw" aria-selected="false" data-show="magazin">Web 1920×1080</button>
@@ -330,6 +333,8 @@
     <canvas id="cv-say" width="1280" height="720"></canvas>
     <canvas id="cv-si" width="1280" height="720"></canvas>
     <canvas id="cv-sir" width="1080" height="1920"></canvas>
+    <canvas id="cv-zr" width="1080" height="1920"></canvas>
+    <canvas id="cv-zw" width="1920" height="1080"></canvas>
     <canvas id="cv-ow" width="1920" height="1080"></canvas>
     <canvas id="cv-or" width="1080" height="1920"></canvas>
     <canvas id="cv-mw" width="1920" height="1080"></canvas>
@@ -338,8 +343,8 @@
   <div class="bar">
     <button id="dl">Stáhnout tento formát</button>
     <button class="ghost" id="dlAll">Stáhnout vše</button>
-    <label class="check" style="margin:0 6px" title="Instagram ukazuje v mřížce profilu jen prostředních 4:5 (1080×1350) z reelsu"><input type="checkbox" id="gridGuide" checked> Vodítko mřížky 4:5</label>
-    <label class="check" style="margin:0 6px" title="Posune texty a logo v reelsu do prostředních 4:5, aby je mřížka Instagramu neořízla; lidé dole smí přijít o těla"><input type="checkbox" id="gridComp"> Kompozice pro mřížku</label>
+    <label class="check" id="gridGuideBox" style="margin:0 6px" title="Instagram ukazuje v mřížce profilu jen prostředních 4:5 (1080×1350) z reelsu"><input type="checkbox" id="gridGuide" checked> Vodítko mřížky 4:5</label>
+
     <button class="ghost" id="copy">Kopírovat do schránky</button>
     <div class="spacer"></div>
     <div class="hint" id="barHint">Export ve full rozlišení, JPG kvalita 95 %.</div>
@@ -349,6 +354,15 @@
 <aside class="right">
   <button class="back" data-back>← Zpět na rozcestí</button>
   <h1><span></span>Popisky</h1>
+  <fieldset>
+    <legend>Původní titulek z článku</legend>
+    <div class="cap-head">
+      <span class="hint">Nemění se, i když titulek na náhledovce přepíšeš.</span>
+      <span class="row" style="flex:0 0 auto;gap:6px"><button class="ghost mini" data-copy="origTitle">Kopírovat</button></span>
+    </div>
+    <textarea id="origTitle" readonly style="min-height:56px" placeholder="doplní se po načtení článku"></textarea>
+  </fieldset>
+
   <fieldset>
     <legend>Postupné kopírování pro Metricool</legend>
     <div class="row">
@@ -661,12 +675,12 @@ function tagLine(){
 const IG_OUTRO="Celý rozhovor najdete na webu @aktualne.cz přes odkaz v BIO 👆 nebo ve vaší podcastové aplikaci 🎧";
 
 /* výchozí výřezy pro všechny formáty — jedno místo, ať se na žádný nezapomene */
-function TF0(){ const o={}; ["yt","reel","sy","sr","sa","say","si","sir","mw","mr","ow","or"].forEach(k=>o[k]={zoom:k==="yt"?80:100,x:0,y:0}); return o; }
+function TF0(){ const o={}; ["yt","reel","sy","sr","sa","say","si","sir","mw","mr","ow","or","zr","zw"].forEach(k=>o[k]={zoom:k==="yt"?80:100,x:0,y:0}); return o; }
 const S={img:null,imgOrig:null,imgURL:null,imgToken:0,alpha:false,trim:{x:0,y:0},fmt:"yt",mode:"spotlight",volby:false,
   tf:TF0(),
-  frame:{yt:{w:YT.photo.w,h:YT.photo.h},reel:{w:ST2.photo.w,h:ST2.photo.h},sy:{w:1280,h:720},sr:{w:1080,h:1920},sa:{w:SA.guest.w,h:SA.guest.h},say:{w:SAY.guest.w,h:SAY.guest.h},si:{w:1280,h:720},sir:{w:1080,h:1920},mw:{w:1920,h:1080},mr:{w:1080,h:1920},ow:{w:1920,h:1080},or:{w:1080,h:1920}}};
+  frame:{yt:{w:YT.photo.w,h:YT.photo.h},reel:{w:ST2.photo.w,h:ST2.photo.h},sy:{w:1280,h:720},sr:{w:1080,h:1920},sa:{w:SA.guest.w,h:SA.guest.h},say:{w:SAY.guest.w,h:SAY.guest.h},si:{w:1280,h:720},sir:{w:1080,h:1920},mw:{w:1920,h:1080},mr:{w:1080,h:1920},ow:{w:1920,h:1080},or:{w:1080,h:1920},zr:{w:1080,h:1920},zw:{w:1920,h:1080}}};
 const $=id=>document.getElementById(id);
-const cvs={yt:$("cv-yt"),reel:$("cv-reel"),sy:$("cv-sy"),sr:$("cv-sr"),sa:$("cv-sa"),say:$("cv-say"),si:$("cv-si"),sir:$("cv-sir"),mw:$("cv-mw"),mr:$("cv-mr"),ow:$("cv-ow"),or:$("cv-or")};
+const cvs={yt:$("cv-yt"),reel:$("cv-reel"),sy:$("cv-sy"),sr:$("cv-sr"),sa:$("cv-sa"),say:$("cv-say"),si:$("cv-si"),sir:$("cv-sir"),mw:$("cv-mw"),mr:$("cv-mr"),ow:$("cv-ow"),or:$("cv-or"),zr:$("cv-zr"),zw:$("cv-zw")};
 /* oba instagramové příspěvky sdílejí umístění fotky, liší se jen textem */
 /* oba instagramové příspěvky sdílejí umístění fotky; storíčko má vlastní,
    protože jeho karta je skoro čtvercová a stejný výřez by v ní seděl jinak */
@@ -847,6 +861,7 @@ function drawCross(ctx,fmt){ const r=crossRect(fmt); drawImgFit(ctx,STREL_IMG.cr
 /* Barvu řádku řídí výhradně hvězdička na jeho začátku: *řádek = červeně,
    bez hvězdičky bíle. Žádné automatické obarvování. */
 const titleText=()=>$("title").value.replace(/^\*\s*/gm,"");
+function leadBlank(){ const r=$("title").value.split("\n"); let n=0; while(n<r.length && !r[n].trim()) n++; return n; }
 function strelLines(){
   // titulky Střelnice a Srandy jsou vždy verzálkami, piš je klidně malými
   return $("title").value.split("\n").map(l=>l.trim()).filter(Boolean)
@@ -946,7 +961,7 @@ function renderStrelDuo(ctx,W,H){
     const size=L.title.size, lead=L.title.lead;
     setArch(ctx,800,size,L.title.wdth);
     lines.forEach((o,i)=>{ ctx.fillStyle=o.red?SR.red:"#fff";
-      archText(ctx,o.text,L.title.cx,L.title.bottom-(lines.length-1-i)*lead); });
+      archText(ctx,o.text,L.title.cx,(L.title.bottom-lead)+(leadBlank()+i)*lead); });   // začíná nahoře, Enter posouvá dolů
   }
   // jméno hosta v červeném boxu, pod ním funkce
   const name=$("first").value.trim();
@@ -1003,16 +1018,85 @@ function renderStrelReel(){
   ctx.textAlign="center"; ctx.textBaseline="alphabetic";
   ctx.fillStyle=lines[0].red?SR.red:"#fff";
   setArch(ctx,800,L.title.kickerSize,L.title.kickerWdth);
-  archText(ctx,lines[0].text,L.title.cx,L.title.kickerBaseline);
+  const shift=leadBlank()*L.title.lead;                    // Enter nahoře posune celý titulek dolů
+  archText(ctx,lines[0].text,L.title.cx,L.title.kickerBaseline+shift);
   const rest=lines.slice(1);
   if(rest.length){
     const size=L.title.size, lead=L.title.lead;
     setArch(ctx,800,size,L.title.wdth);
     rest.forEach((o,i)=>{ ctx.fillStyle=o.red?SR.red:"#fff";
-      archText(ctx,o.text,L.title.cx,L.title.firstBaseline+i*lead); });
+      archText(ctx,o.text,L.title.cx,L.title.firstBaseline+shift+i*lead); });
   }
   ctx.textAlign="left";
 }
+
+/* ---------- Zpravodajství (Aktuálně): univerzální obálka pro reels 1080×1920 a web 1920×1080 ----------
+   Vlastní návrh: fotka přes celou plochu, tmavý přechod zdola, kolečko A + rubrika v barvě,
+   bílý titulek (Enter), podtitulek, autor. V reelsu je všechno podstatné v bezpečné zóně 4:5
+   (y 285–1635), takže stejný soubor funguje v 9:16 i v mřížce Instagramu. */
+const RUBRIKY={
+  domaci:{label:"DOMÁCÍ",color:"#F5C842"}, zahranici:{label:"ZAHRANIČÍ",color:"#FF5A5F"}, ekonomika:{label:"EKONOMIKA",color:"#FF8A3D"},
+  pocasi:{label:"POČASÍ",color:"#5FD3F3"}, sport:{label:"SPORT",color:"#3CCB7F"}, auto:{label:"AUTO",color:"#4FA3FF"},
+  kultura:{label:"KULTURA",color:"#FF6AC2"}, magazin:{label:"MAGAZÍN",color:"#B678FF"}, nazory:{label:"NÁZORY",color:"#F5C842"}
+};
+const ZP={
+  font:'"Barlow", sans-serif', panel:"#1B6FC4",
+  reel:{ grad:{from:700,to:1920,max:0.92}, rub:{size:30,track:5}, panelTop:1040, tilt:70, fade:520, mark:{x:72,y:320}, logoA:96,
+         block:{top:1140}, bar:{w:10,gap:26},
+         author:{size:30}, sub:{size:46,lead:56}, title:{size:96,lead:104,x:108}, gaps:{author:30,sub:22,rub:36} },
+  web:{  grad:{from:260,to:1080,max:0.9}, rub:{size:30,track:5}, panelTop:560, tilt:90, fade:380, mark:{x:80,y:70}, logoA:96,
+         block:{top:650}, bar:{w:10,gap:26},
+         author:{size:30}, sub:{size:46,lead:56}, title:{size:92,lead:100,x:116}, gaps:{author:30,sub:22,rub:36} }
+};
+function rubFromName(n){
+  const k=norm(n||"");
+  if(!k) return "";
+  if(/zahrani/.test(k)) return "zahranici"; if(/domac/.test(k)) return "domaci"; if(/ekonom/.test(k)) return "ekonomika";
+  if(/pocas/.test(k)) return "pocasi"; if(/sport/.test(k)) return "sport"; if(/^auto/.test(k)) return "auto";
+  if(/magaz/.test(k)) return "magazin"; if(/kultur/.test(k)) return "kultura"; if(/nazor/.test(k)) return "nazory"; return "";
+}
+function rubFromUrl(u){
+  const m=(u||"").match(/^https?:\/\/([a-z0-9-]+)\.aktualne\.cz/i); const sub=m?m[1].toLowerCase():"";
+  const map={sport:"sport",auto:"auto",magazin:"magazin",zahranici:"zahranici",ekonomika:"ekonomika",kultura:"kultura",domaci:"domaci",pocasi:"pocasi",nazory:"nazory"};
+  return map[sub]||"";
+}
+function lum(hex){ const n=parseInt(hex.slice(1),16); const r=n>>16&255,g=n>>8&255,b=n&255; return (0.299*r+0.587*g+0.114*b)/255; }
+function zpDraw(ctx,W,H,L,fmt){
+  ctx.clearRect(0,0,W,H); ctx.fillStyle="#111"; ctx.fillRect(0,0,W,H);
+  magPhoto(ctx,fmt,W,H);                                  // fotka na celou plochu, posun/zoom jako jinde
+  const R=RUBRIKY[$("rubrika").value]||RUBRIKY.domaci;
+  const look="color";                                       // jeden vzhled: modrý panel Aktuálně, bílý text
+  const dark=true;
+  const ink = dark ? "#fff" : "#0E0F13", inkSoft = dark ? "rgba(255,255,255,.85)" : "rgba(14,15,19,.8)";
+  const tilt=L.tilt||0;                                     // šikmá hrana panelu: o kolik px je pravý roh výš
+  if(look==="color"||look==="panel"){
+    // šikmý tvar + měkký průběh: gradient jde kolmo na šikmou hranu, na hraně skoro průhledný, pak postupně do plné
+    const len=Math.hypot(tilt,W), nx=tilt/len, ny=W/len, d=L.fade*1.35;
+    const x0=W/2, y0=L.panelTop, gp=ctx.createLinearGradient(x0,y0,x0+nx*d,y0+ny*d);
+    gp.addColorStop(0,ZP.panel+"03"); gp.addColorStop(0.3,ZP.panel+"2E"); gp.addColorStop(0.65,ZP.panel+"A0"); gp.addColorStop(1,ZP.panel);
+    ctx.fillStyle=gp;
+    ctx.beginPath(); ctx.moveTo(0,L.panelTop+tilt/2); ctx.lineTo(W,L.panelTop-tilt/2); ctx.lineTo(W,H); ctx.lineTo(0,H); ctx.closePath(); ctx.fill();
+  }else{
+    const g=ctx.createLinearGradient(0,L.grad.from,0,L.grad.to);
+    g.addColorStop(0,"rgba(0,0,0,0)"); g.addColorStop(0.45,`rgba(0,0,0,${L.grad.max*0.75})`); g.addColorStop(1,`rgba(0,0,0,${L.grad.max})`);
+    ctx.fillStyle=g; ctx.fillRect(0,L.grad.from,W,L.grad.to-L.grad.from);
+  }
+  // textový blok roste DOLŮ: titulek, podtitulek, autor, rubrika
+  let y=L.block.top+L.title.size*0.78;
+  ctx.textBaseline="alphabetic"; ctx.textAlign="left";
+  const title=$("title").value.split("\n").map(l=>l.trim()).filter(Boolean);
+  ctx.fillStyle=ink; ctx.font=`700 ${L.title.size}px ${ZP.font}`;
+  title.forEach((l,i)=>{ if(i) y+=L.title.lead; ctx.fillText(l,L.title.x,y); });
+  const sub=$("titleAlt").value.split("\n").map(l=>l.trim()).filter(Boolean);
+  if(sub.length){ ctx.font=`600 ${L.sub.size}px ${ZP.font}`; y+=L.gaps.sub+L.sub.size;
+    sub.forEach((l,i)=>{ if(i) y+=L.sub.lead; ctx.fillText(l,L.title.x,y); }); }
+  // logo A vpravo nahoře, na horní hraně mřížky 4:5
+  if(ready(OS_IMG.a)) ctx.drawImage(OS_IMG.a,W-L.title.x+L.bar.gap+L.bar.w-L.logoA,L.mark.y,L.logoA,L.logoA);
+  // barevná linka podél bloku — jen tam, kde panel není v barvě rubriky
+  if(look!=="color"){ ctx.fillStyle=R.color; ctx.fillRect(L.title.x-L.bar.gap-L.bar.w, L.block.top, L.bar.w, y-L.block.top+8); }
+}
+function renderZpravyReel(){ const c=cvs.zr; zpDraw(c.getContext("2d"),c.width,c.height,scaleL(ZP.reel),"zr"); }
+function renderZpravyWeb(){ const c=cvs.zw; zpDraw(c.getContext("2d"),c.width,c.height,scaleL(ZP.web),"zw"); }
 
 /* ---------- Štrunc osobně: web 1920×1080 a reelsko 1080×1920 ----------
    Pozadí jsou hotové podklady z grafiky; kreslí se logo, A, titulek
@@ -1083,7 +1167,7 @@ function osDraw(ctx,W,H,L,fmt){
 }
 function renderStrunc(){ const c=cvs.ow; osDraw(c.getContext("2d"),c.width,c.height,scaleL(OS.web),"ow"); }
 function renderStruncReel(){ const c=cvs.or; let L=scaleL(OS.reel);
-  if(gridComp()){ L={...L, a:{x:510,y:300,w:60,h:60}, logo:{x:150,y:385,w:780,h:146}, title:{...L.title,first:700}, sub:{...L.sub,top:1045},   // mřížka 4:5
+  if(gridComp()){ L={...L, a:{x:485,y:315,w:110,h:110}, logo:{x:150,y:445,w:780,h:146}, title:{...L.title,first:760}, sub:{...L.sub,top:1105},   // mřížka 4:5
                    guest:{...L.guest,h:620,bottom:1780}, host:{...L.host,h:620,bottom:1780}, blackBelow:1780, fadeFrom:1480}; }
   osDraw(c.getContext("2d"),c.width,c.height,L,"or"); }
 
@@ -1253,12 +1337,13 @@ function renderSrandaYT(){
   ctx.fillStyle=SA.black; ctx.textAlign="center"; ctx.textBaseline="alphabetic";
   const lines=strelLines();
   setArch(ctx,800,L.title.size,L.title.wdth);
-  lines.forEach((o,i)=>archText(ctx,o.text,L.title.cx,L.title.first+i*L.title.lead));
+  const lb=leadBlank();
+  lines.forEach((o,i)=>archText(ctx,o.text,L.title.cx,L.title.first+(lb+i)*L.title.lead));
   const sub=$("titleAlt").value.split("\n").map(l=>l.trim()).filter(Boolean)[0];
   if(sub){ setArch(ctx,700,L.sub.size,L.sub.wdth);
     // podtitulek sedí pevnou mezeru pod POSLEDNÍM řádkem titulku (v návrhu 65 px při dvou řádcích),
     // mezera se škáluje s titulkem, takže zvětšený titulek ho odsune
-    const lastBase=L.title.first+Math.max(0,lines.length-1)*L.title.lead;
+    const lastBase=L.title.first+(lb+Math.max(0,lines.length-1))*L.title.lead;
     const gap=(SAY.sub.baseline-SAY.title.first-SAY.title.lead)*kT();
     archText(ctx,sub.toUpperCase(),L.title.cx,lastBase+gap); }
   ctx.restore(); ctx.textAlign="left"; archOff(ctx);
@@ -1273,6 +1358,7 @@ function renderSrandaYT(){
 function renderSranda(){
   const c=cvs.sa, ctx=c.getContext("2d"), W=c.width, H=c.height, L=scaleL(SA);
   if(gridComp()){ L.guest={w:380,h:400,right:1000,bottom:690};   // mřížka 4:5: logo i trojice v původní velikosti
+    L.logo={...L.logo,y:300};                                      // logo celé pod hranou ořezu (285), těsně nad klínem
     L.trio={...L.trio,bottom:1680}; L.bandBot={...L.bandBot,y:1688}; L.panel={...L.panel,bottom:1688};
     L.title={...L.title,bottom:1090}; L.sub={...L.sub,baseline:1205}; }
   ctx.clearRect(0,0,W,H);
@@ -1303,11 +1389,13 @@ function renderSranda(){
   const lines=strelLines();
   ctx.textAlign="center"; ctx.textBaseline="alphabetic"; ctx.fillStyle=L.black;
   setArch(ctx,800,L.title.size,L.title.wdth);
-  lines.forEach((o,i)=>archText(ctx,o.text,L.title.cx,L.title.bottom-(lines.length-1-i)*L.title.lead));
-  // malý řádek dole bere Alternativní titulek
+  const top=L.title.bottom-2*L.title.lead, lb=leadBlank();      // první řádek nahoře (jako u tří řádků), Enter posouvá dolů
+  lines.forEach((o,i)=>archText(ctx,o.text,L.title.cx,top+(lb+i)*L.title.lead));
+  const last=top+(lb+Math.max(0,lines.length-1))*L.title.lead;
+  // malý řádek pod titulkem bere Podtitulek
   const sub=$("titleAlt").value.split("\n").map(l=>l.trim()).filter(Boolean)[0];
   if(sub){ setArch(ctx,700,L.sub.size,L.sub.wdth);
-    archText(ctx,sub.toUpperCase(),L.title.cx,L.title.bottom+(L.sub.baseline-L.title.bottom)*Math.max(1,kS())); }
+    archText(ctx,sub.toUpperCase(),L.title.cx,last+(L.sub.baseline-L.title.bottom)*Math.max(1,kS())); }
   ctx.textAlign="left"; archOff(ctx);
 
   // trojice moderátorů dole, pevně
@@ -1413,6 +1501,7 @@ function render(){
     if(S.mode==="sikana"){ renderSikana(); renderSikanaReel(); }
     if(S.mode==="magazin"){ renderMagazin(); renderMagazinReel(); }
     if(S.mode==="strunc"){ renderStrunc(); renderStruncReel(); }
+    if(S.mode==="aktualne"){ renderZpravyReel(); renderZpravyWeb(); }
     if(S.mode==="sranda"){ try{ renderSranda(); renderSrandaYT(); }catch(err){ $("cutSt").textContent="Chyba vykreslení: "+err.message; $("cutSt").className="status err"; } }
     renderYT();
   }); }
@@ -1441,7 +1530,8 @@ function refreshCaptions(){
     $("capIG").value = p ? p+"\n\n"+IG_OUTRO+tagsStr : "";
     $("capYT").value = p ? p+"\n\n"+YT_OUTRO_SPOT+link+"\n\n"+YT_PODCASTS : "";
   }
-  $("capTitle").value=$("title").value.trim();
+  // titulek pro YouTube = původní titulek článku; titulek náhledovky (verzálky, Enter) ho nepřepisuje
+  $("capTitle").value=($("origTitle").value.trim()||$("title").value.replace(/\s*\n\s*/g," ").trim());
   $("capTitleAlt").value=$("titleAlt").value.trim();
   capCounts();
 }
@@ -1671,7 +1761,7 @@ function parseHTML(body){
   const og=pick(doc,['meta[property="og:title"]','meta[name="twitter:title"]']);
   const title=deSite([h1,og,pick(doc,["title"])].find(t=>t&&!isJunk(t))||"");
   const alt=deSite(og&&!isJunk(og)&&norm(og)!==norm(title)?og:"");
-  return { title, titleAlt:alt, perex:pickPerex(doc), author:pickAuthor(doc,body) };
+  return { title, titleAlt:alt, perex:pickPerex(doc), author:pickAuthor(doc,body), rubric:txt(doc.querySelector('.e-ui-sub-menu__title')||{}) };
 }
 /* autor článku: meta author, případně odkaz/element s "author" ve třídě nebo rel */
 function pickAuthor(doc,raw){
@@ -1743,7 +1833,7 @@ async function loadRound(url,ctrl,log){
   // pojistka na závěr: kdyby některá cesta filtr obešla, sem to neprojde
   const clean=v=>(v&&!isJunk(v))?v:"";
   const perex=clean(best.got.perex);
-  return { src:best.src, title:clean(best.got.title), alt:clean(best.got.titleAlt),
+  return { src:best.src, title:clean(best.got.title), alt:clean(best.got.titleAlt), rubric:best.got.rubric||(seen.find(r=>r.got.rubric)||{got:{}}).got.rubric||"",
            perex:isProse(perex)?perex:"", author:best.got.author||"" };
 }
 
@@ -1775,10 +1865,11 @@ $("load").addEventListener("click",async()=>{
 
   loading=false; btn.textContent=label;
 
-  if(got&&got.title) $("title").value=got.title;
+  if(got&&got.title){ $("title").value=got.title; $("origTitle").value=got.title; }
   if(got&&got.alt) $("titleAlt").value=got.alt;
   if(got&&got.perex) $("perex").value=got.perex;
   if(got&&got.author) $("author").value=got.author;
+  { const r=rubFromName(got&&got.rubric)||rubFromUrl($("url").value); if(r) $("rubrika").value=r; }
   counters(); refreshCaptions();
   if(S.mode==="spotlight") render();
 
@@ -1809,7 +1900,7 @@ function hasAlpha(img){
 function setImage(f){ return new Promise((res,rej)=>{
   const img=new Image();
   img.onload=()=>{S.img=img; S.imgOrig=null; S.imgToken=(S.imgToken||0)+1;
-    try{S.alpha=hasAlpha(img);}catch(e){S.alpha=false;}S.tf=TF0();syncSliders();render();if(S.mode!=="magazin") autoCut(S.imgToken);res();};
+    try{S.alpha=hasAlpha(img);}catch(e){S.alpha=false;}S.tf=TF0();syncSliders();render();if(S.mode!=="magazin"&&S.mode!=="aktualne") autoCut(S.imgToken);res();};
   img.onerror=rej; S.imgURL=URL.createObjectURL(f); img.src=S.imgURL; }); }
 $("pickFile").addEventListener("click",()=>$("file").click());
 
@@ -2111,7 +2202,7 @@ function imgMap(fmt){
     const s=Math.min(b.w/iw,b.h/ih)*(tf.zoom/100);
     return {s, dx:b.left+(tf.x/100)*b.w, dy:b.bottom-ih*s+(tf.y/100)*b.h};
   }
-  if(fmt==="si"||fmt==="sir"||fmt==="mw"||fmt==="mr") return null;   // tyhle formáty výřez nepoužívají
+  if(fmt==="si"||fmt==="sir"||fmt==="mw"||fmt==="mr"||fmt==="zr"||fmt==="zw") return null;   // tyhle formáty výřez nepoužívají
   const r=photoRect(fmt), tf=tfFor(fmt);
   const contain=((fmt==="yt"||fmt==="reel")&&S.alpha);
   const s=(contain?Math.min(r.w/iw,r.h/ih):Math.max(r.w/iw,r.h/ih))*(tf.zoom/100);
@@ -2310,19 +2401,20 @@ const FILE={yt:f=>`spotlight_nahledovka_YouTube_${f}`,
             si:f=>`sikana_nahledovka_YouTube_${f}`,
             sir:f=>`sikana_nahledovka_reels_${f}`,
             mw:f=>`magazin_nahledovka_web_${f}`, mr:f=>`magazin_nahledovka_reels_${f}`,
-            ow:f=>`strunc_osobne_nahledovka_web_${f}`, or:f=>`strunc_osobne_nahledovka_reels_${f}`};
+            ow:f=>`strunc_osobne_nahledovka_web_${f}`, or:f=>`strunc_osobne_nahledovka_reels_${f}`,
+            zr:f=>`aktualne_obalka_reels_${f}`, zw:f=>`aktualne_obalka_web_${f}`};
 function download(fmt){ cvs[fmt].toBlob(b=>{
   const a=document.createElement("a"); a.href=URL.createObjectURL(b);
-  a.download=FILE[fmt](slug())+(S.volby?"_volby":"")+((typeof gridComp==="function"&&gridComp()&&REEL_FMTS.has(fmt))?"_mrizka":"")+".jpg"; a.click();
+  a.download=FILE[fmt](slug())+(S.volby?"_volby":"")+".jpg"; a.click();
   setTimeout(()=>URL.revokeObjectURL(a.href),2000); },"image/jpeg",0.95); }
 $("dl").addEventListener("click",()=>download(S.fmt));
 /* Vodítko mřížky: Instagram v profilu ukazuje z reelsu (1080×1920) jen střed 4:5 = 1080×1350,
    tj. odřízne 285 px nahoře i dole. Překryv se kreslí jen přes reelsové náhledy. */
-const REEL_FMTS=new Set(["reel","sr","sa","sir","mr","or"]);
-function gridComp(){ return !!($("gridComp")&&$("gridComp").checked); }
-$("gridComp").addEventListener("change",()=>render());
+const REEL_FMTS=new Set(["reel","sr","sa","sir","mr","or","zr"]);
+function gridComp(){ return true; }   // reelsy se skládají pro mřížku 4:5 vždy
 function gridGuide(){
   const o=$("gridOverlay"), c=cvs[S.fmt]; if(!o||!c) return;
+  const box=$("gridGuideBox"); if(box) box.style.display=REEL_FMTS.has(S.fmt)?"":"none";   // přepínač jen u reelů
   if(!$("gridGuide").checked||!REEL_FMTS.has(S.fmt)){ o.style.display="none"; return; }
   const st=c.parentElement.getBoundingClientRect(), r=c.getBoundingClientRect();
   const k=r.height/1920;
@@ -2340,7 +2432,7 @@ function downloadGridCrop(fmt){
     setTimeout(()=>URL.revokeObjectURL(a.href),2000); },"image/jpeg",0.95);
 }
 $("dlAll").addEventListener("click",()=>{
-  const list=(S.mode==="strelnice")?["sy","sr"]:(S.mode==="sikana")?["si","sir"]:(S.mode==="magazin")?["mw","mr"]:(S.mode==="strunc")?["ow","or"]:(S.mode==="sranda")?["say","sa"]:["yt","reel"];
+  const list=(S.mode==="strelnice")?["sy","sr"]:(S.mode==="sikana")?["si","sir"]:(S.mode==="magazin")?["mw","mr"]:(S.mode==="strunc")?["ow","or"]:(S.mode==="aktualne")?["zr","zw"]:(S.mode==="sranda")?["say","sa"]:["yt","reel"];
   list.forEach((f,i)=>setTimeout(()=>download(f),i*350));
   list.filter(f=>REEL_FMTS.has(f)).forEach((f,i)=>setTimeout(()=>downloadGridCrop(f),list.length*350+i*350)); });
 $("copy").addEventListener("click",async()=>{
@@ -2353,6 +2445,9 @@ $("copy").addEventListener("click",async()=>{
 $("url").addEventListener("input",refreshCaptions);
 $("magLogo").addEventListener("change",()=>render());
 $("magAlign").addEventListener("change",()=>render());
+
+
+$("url").addEventListener("change",()=>{ const r=rubFromUrl($("url").value); if(r){ $("rubrika").value=r; render(); } });
 function fsSync(){ const f=fsCur(); $("fsTitle").value=f.t; $("fsSub").value=f.s; $("fsTitleV").textContent=f.t+" %"; $("fsSubV").textContent=f.s+" %"; }
 $("fsTitle").addEventListener("input",()=>{ fsCur().t=+$("fsTitle").value; fsSync(); render(); });
 $("fsSub").addEventListener("input",()=>{ fsCur().s=+$("fsSub").value; fsSync(); render(); });
@@ -2386,7 +2481,7 @@ function counters(){ $("cTitle").textContent=$("title").value.length;
 function setMode(m){
   S.mode=m;
   document.body.dataset.mode=m;
-  const withThumbs=(m==="spotlight"||m==="strelnice"||m==="sranda"||m==="sikana"||m==="magazin"||m==="strunc");
+  const withThumbs=true;
   document.body.classList.toggle("nothumbs", !withThumbs);
   // každé pole ukáže jen pořad, který ho opravdu používá
   document.querySelectorAll("[data-modes]").forEach(el=>{
@@ -2402,6 +2497,7 @@ function setMode(m){
   document.body.classList.toggle("show", !!SHOWS[m]);
   document.body.classList.toggle("ytcap", true);
   document.body.classList.toggle("fixedhost", m==="strelnice"||m==="strunc");
+
   const who=m==="strunc"?"Štrunce":"Matyáše";
   $("roleLabel").textContent = m==="strunc" ? "Jméno a funkce hosta (každý řádek = žlutý box)" : "Popisek hosta";
   $("fixedSummary").textContent="Vyměnit "+who+" (nepovinné)"; $("fixedReset").textContent="Vrátit "+who+" ze šablony";
