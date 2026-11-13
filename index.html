@@ -72,6 +72,10 @@
   .tab{background:transparent;color:var(--dim);border-radius:8px 8px 0 0;padding:10px 18px;
     font-weight:600;font-size:13px}
   .tab[aria-selected=true]{background:var(--panel-2);color:#fff}
+  .stage{position:relative}
+  #gridOverlay{position:absolute;pointer-events:none;display:none;border-top:2px dashed rgba(255,255,255,.75);border-bottom:2px dashed rgba(255,255,255,.75);
+    box-shadow:0 0 0 9999px rgba(0,0,0,.35);}
+  #gridOverlay::after{content:"mřížka Instagramu 4:5";position:absolute;right:8px;top:6px;font:600 11px/1 system-ui,sans-serif;color:#fff;opacity:.8;letter-spacing:.04em}
   .stage{flex:1;display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto;
     background:linear-gradient(45deg,#0A0F28 25%,transparent 25%) -10px 0/20px 20px,
       linear-gradient(-45deg,#0A0F28 25%,transparent 25%) -10px 0/20px 20px,var(--ink)}
@@ -215,7 +219,7 @@
   </header>
 
   <fieldset>
-    <legend>Článek <span class="hint" id="ver" style="font-weight:400">v 2026-11-12o</span></legend>
+    <legend>Článek <span class="hint" id="ver" style="font-weight:400">v 2026-11-13d</span></legend>
     <label for="url">Odkaz na článek (klidně zkrácený aktln.cz)</label>
     <input type="url" id="url" placeholder="https://video.aktualne.cz/…">
     <div class="row" style="margin-top:9px"><button id="load">Načíst článek</button></div>
@@ -317,6 +321,7 @@
     <div class="hint" style="padding-bottom:12px" id="dims">1280 × 720 px</div>
   </div>
   <div class="stage">
+    <div id="gridOverlay"></div>
     <canvas id="cv-yt" width="1280" height="720" class="active"></canvas>
     <canvas id="cv-reel" width="1080" height="1920"></canvas>
     <canvas id="cv-sy" width="1280" height="720"></canvas>
@@ -333,6 +338,8 @@
   <div class="bar">
     <button id="dl">Stáhnout tento formát</button>
     <button class="ghost" id="dlAll">Stáhnout vše</button>
+    <label class="check" style="margin:0 6px" title="Instagram ukazuje v mřížce profilu jen prostředních 4:5 (1080×1350) z reelsu"><input type="checkbox" id="gridGuide" checked> Vodítko mřížky 4:5</label>
+    <label class="check" style="margin:0 6px" title="Posune texty a logo v reelsu do prostředních 4:5, aby je mřížka Instagramu neořízla; lidé dole smí přijít o těla"><input type="checkbox" id="gridComp"> Kompozice pro mřížku</label>
     <button class="ghost" id="copy">Kopírovat do schránky</button>
     <div class="spacer"></div>
     <div class="hint" id="barHint">Export ve full rozlišení, JPG kvalita 95 %.</div>
@@ -964,6 +971,8 @@ function renderStrelDuo(ctx,W,H){
 /* ---------- Střelnice: reelsko 1080×1920 ---------- */
 function renderStrelReel(){
   const c=cvs.sr, ctx=c.getContext("2d"), W=c.width, H=c.height, L=scaleL(SRR);
+  if(gridComp()){ L.title={...L.title, kickerBaseline:L.title.kickerBaseline+75, firstBaseline:L.title.firstBaseline+75};   // mřížka 4:5
+    L.host={...L.host, w:Math.round(480*1250/1020), h:1250}; }
   ctx.clearRect(0,0,W,H); ctx.fillStyle=SR.bg; ctx.fillRect(0,0,W,H);
 
   const hu=STREL_IMG.hostUser||STREL_IMG.host;
@@ -1046,6 +1055,11 @@ function osDraw(ctx,W,H,L,fmt){
   const hu=STREL_IMG.hostUser||OS_IMG.host;
   if(ready(hu)){ const h=L.host, k=h.h/hu.height;       // zarovnaný na pravý a spodní okraj plátna
     ctx.drawImage(hu, h.right-hu.width*k, h.bottom-hu.height*k, hu.width*k, hu.height*k); }
+  if(L.blackBelow){   // od sak postupně do černé, pod postavami rovná černá
+    const g=ctx.createLinearGradient(0,L.fadeFrom||L.blackBelow-280,0,L.blackBelow);
+    g.addColorStop(0,"rgba(0,0,0,0)"); g.addColorStop(0.5,"rgba(0,0,0,.55)"); g.addColorStop(1,"#000");
+    ctx.fillStyle=g; ctx.fillRect(0,L.fadeFrom||L.blackBelow-280,W,L.blackBelow-(L.fadeFrom||L.blackBelow-280));
+    ctx.fillStyle="#000"; ctx.fillRect(0,L.blackBelow,W,H-L.blackBelow); }
   drawImgFit(ctx,OS_IMG.logo,L.logo.x,L.logo.y,L.logo.w,L.logo.h);
   drawImgFit(ctx,OS_IMG.a,L.a.x,L.a.y,L.a.w,L.a.h);
   // titulek: bílé verzálky, na střed, roste dolů od prvního účaří
@@ -1068,7 +1082,10 @@ function osDraw(ctx,W,H,L,fmt){
   ctx.textAlign="left";
 }
 function renderStrunc(){ const c=cvs.ow; osDraw(c.getContext("2d"),c.width,c.height,scaleL(OS.web),"ow"); }
-function renderStruncReel(){ const c=cvs.or; osDraw(c.getContext("2d"),c.width,c.height,scaleL(OS.reel),"or"); }
+function renderStruncReel(){ const c=cvs.or; let L=scaleL(OS.reel);
+  if(gridComp()){ L={...L, a:{x:510,y:300,w:60,h:60}, logo:{x:150,y:385,w:780,h:146}, title:{...L.title,first:700}, sub:{...L.sub,top:1045},   // mřížka 4:5
+                   guest:{...L.guest,h:620,bottom:1780}, host:{...L.host,h:620,bottom:1780}, blackBelow:1780, fadeFrom:1480}; }
+  osDraw(c.getContext("2d"),c.width,c.height,L,"or"); }
 
 /* ---------- Magazín: web 1920×1080 a reelsko 1080×1920 ----------
    Celá grafika (oba průsvitné boxy i texty) je natočená o 8° po směru hodin,
@@ -1168,6 +1185,8 @@ function renderMagazinReel(){ const c=cvs.mr; magDraw(c.getContext("2d"),c.width
 /* ---------- Politická šikana: reelsko 1080×1920 ---------- */
 function renderSikanaReel(){
   const c=cvs.sir, ctx=c.getContext("2d"), W=c.width, H=c.height, L=scaleL(SIR);
+  if(gridComp()){ const n=$("title").value.split("\n").filter(l=>l.trim()).length;   // mřížka 4:5
+    L.title={...L.title, bottom:620, size:(n>=3?115:150)*kT(), lead:(n>=3?112:145)*kT()}; }
   ctx.clearRect(0,0,W,H);
   if(ready(SIR_BG)) ctx.drawImage(SIR_BG,0,0,W,H);
   const lines=id=>$(id).value.split("\n").map(l=>l.trim()).filter(Boolean);
@@ -1253,6 +1272,9 @@ function renderSrandaYT(){
 /* ---------- Sranda: reelsko 1080×1920 ---------- */
 function renderSranda(){
   const c=cvs.sa, ctx=c.getContext("2d"), W=c.width, H=c.height, L=scaleL(SA);
+  if(gridComp()){ L.guest={w:380,h:400,right:1000,bottom:690};   // mřížka 4:5: logo i trojice v původní velikosti
+    L.trio={...L.trio,bottom:1680}; L.bandBot={...L.bandBot,y:1688}; L.panel={...L.panel,bottom:1688};
+    L.title={...L.title,bottom:1090}; L.sub={...L.sub,baseline:1205}; }
   ctx.clearRect(0,0,W,H);
   ctx.fillStyle=L.orange; ctx.fillRect(0,0,W,H);
   ctx.fillStyle=L.black;  ctx.fillRect(0,L.panel.top,W,L.panel.bottom-L.panel.top);
@@ -1285,13 +1307,13 @@ function renderSranda(){
   // malý řádek dole bere Alternativní titulek
   const sub=$("titleAlt").value.split("\n").map(l=>l.trim()).filter(Boolean)[0];
   if(sub){ setArch(ctx,700,L.sub.size,L.sub.wdth);
-    archText(ctx,sub.toUpperCase(),L.title.cx,SA.title.bottom+(SA.sub.baseline-SA.title.bottom)*Math.max(1,kS())); }
+    archText(ctx,sub.toUpperCase(),L.title.cx,L.title.bottom+(L.sub.baseline-L.title.bottom)*Math.max(1,kS())); }
   ctx.textAlign="left"; archOff(ctx);
 
   // trojice moderátorů dole, pevně
   const t=SRA_IMG.trio;
-  if(ready(t)) ctx.drawImage(t, L.trio.cx-t.naturalWidth/2, L.trio.bottom-t.naturalHeight,
-                             t.naturalWidth, t.naturalHeight);
+  if(ready(t)){ const k=L.trio.k||1;
+    ctx.drawImage(t, L.trio.cx-t.naturalWidth*k/2, L.trio.bottom-t.naturalHeight*k, t.naturalWidth*k, t.naturalHeight*k); }
   hazard(ctx,L.bandTop.y,L.bandTop.h,W);
   hazard(ctx,L.bandBot.y,L.bandBot.h,W);
 }
@@ -1312,7 +1334,10 @@ function hazard(ctx,y,h,W,x0){
 
 /* ---------- reelsko 1080×1920 ---------- */
 function renderReel(){
-  const c=cvs.reel, ctx=c.getContext("2d"), W=c.width, H=c.height, L=ST2;
+  const c=cvs.reel, ctx=c.getContext("2d"), W=c.width, H=c.height;
+  let L=ST2;
+  if(gridComp()) L={...ST2, split:1060, frame:{...ST2.frame,y:430}, photo:{...ST2.photo,h:1060},   // mřížka 4:5
+                     ring:{...ST2.ring,cy:1520}, badgeBaseline:1535, titleBottom:1330};
   ctx.clearRect(0,0,W,H);
   ctx.fillStyle=L.bgTop; ctx.fillRect(0,0,W,L.split);
   ctx.fillStyle=L.bgBottom; ctx.fillRect(0,L.split,W,H-L.split);
@@ -1378,7 +1403,8 @@ function mix(h1,h2,t){const a=parseInt(h1.slice(1),16),b=parseInt(h2.slice(1),16
   return `rgb(${ch(16)},${ch(8)},${ch(0)})`;}
 
 let raf=null;
-function render(){ if(raf) cancelAnimationFrame(raf);
+function render(){
+  if(typeof gridGuide==="function") setTimeout(gridGuide,0); if(raf) cancelAnimationFrame(raf);
   raf=requestAnimationFrame(()=>{
     // u Srandy je šablona hotová i bez fotky, tak ji neznačíme jako prázdnou
     Object.entries(cvs).forEach(([k,c])=>c.classList.toggle("empty",!S.img&&k!=="sa"));
@@ -2287,12 +2313,36 @@ const FILE={yt:f=>`spotlight_nahledovka_YouTube_${f}`,
             ow:f=>`strunc_osobne_nahledovka_web_${f}`, or:f=>`strunc_osobne_nahledovka_reels_${f}`};
 function download(fmt){ cvs[fmt].toBlob(b=>{
   const a=document.createElement("a"); a.href=URL.createObjectURL(b);
-  a.download=FILE[fmt](slug())+(S.volby?"_volby":"")+".jpg"; a.click();
+  a.download=FILE[fmt](slug())+(S.volby?"_volby":"")+((typeof gridComp==="function"&&gridComp()&&REEL_FMTS.has(fmt))?"_mrizka":"")+".jpg"; a.click();
   setTimeout(()=>URL.revokeObjectURL(a.href),2000); },"image/jpeg",0.95); }
 $("dl").addEventListener("click",()=>download(S.fmt));
+/* Vodítko mřížky: Instagram v profilu ukazuje z reelsu (1080×1920) jen střed 4:5 = 1080×1350,
+   tj. odřízne 285 px nahoře i dole. Překryv se kreslí jen přes reelsové náhledy. */
+const REEL_FMTS=new Set(["reel","sr","sa","sir","mr","or"]);
+function gridComp(){ return !!($("gridComp")&&$("gridComp").checked); }
+$("gridComp").addEventListener("change",()=>render());
+function gridGuide(){
+  const o=$("gridOverlay"), c=cvs[S.fmt]; if(!o||!c) return;
+  if(!$("gridGuide").checked||!REEL_FMTS.has(S.fmt)){ o.style.display="none"; return; }
+  const st=c.parentElement.getBoundingClientRect(), r=c.getBoundingClientRect();
+  const k=r.height/1920;
+  o.style.display="block"; o.style.left=(r.left-st.left+c.parentElement.scrollLeft)+"px"; o.style.width=r.width+"px";
+  o.style.top=(r.top-st.top+c.parentElement.scrollTop+285*k)+"px"; o.style.height=(1350*k)+"px";
+}
+$("gridGuide").addEventListener("change",gridGuide);
+window.addEventListener("resize",gridGuide);
+/* ořez pro mřížku: střed 4:5 z reelsu, 1080×1350 */
+function downloadGridCrop(fmt){
+  const src=cvs[fmt]; const c=document.createElement("canvas"); c.width=1080; c.height=1350;
+  c.getContext("2d").drawImage(src,0,285,1080,1350,0,0,1080,1350);
+  c.toBlob(b=>{ const a=document.createElement("a"); a.href=URL.createObjectURL(b);
+    a.download=FILE[fmt](slug()).replace(/reels?/i,"mrizka_4x5")+".jpg"; a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href),2000); },"image/jpeg",0.95);
+}
 $("dlAll").addEventListener("click",()=>{
   const list=(S.mode==="strelnice")?["sy","sr"]:(S.mode==="sikana")?["si","sir"]:(S.mode==="magazin")?["mw","mr"]:(S.mode==="strunc")?["ow","or"]:(S.mode==="sranda")?["say","sa"]:["yt","reel"];
-  list.forEach((f,i)=>setTimeout(()=>download(f),i*350)); });
+  list.forEach((f,i)=>setTimeout(()=>download(f),i*350));
+  list.filter(f=>REEL_FMTS.has(f)).forEach((f,i)=>setTimeout(()=>downloadGridCrop(f),list.length*350+i*350)); });
 $("copy").addEventListener("click",async()=>{
   try{ const b=await new Promise(r=>cvs[S.fmt].toBlob(r,"image/png"));
     await navigator.clipboard.write([new ClipboardItem({"image/png":b})]);
