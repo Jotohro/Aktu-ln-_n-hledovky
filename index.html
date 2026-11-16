@@ -219,7 +219,7 @@
   </header>
 
   <fieldset>
-    <legend>Článek <span class="hint" id="ver" style="font-weight:400">v 2026-11-16a</span></legend>
+    <legend>Článek <span class="hint" id="ver" style="font-weight:400">v 2026-11-16b</span></legend>
     <label for="url">Odkaz na článek (klidně zkrácený aktln.cz)</label>
     <input type="url" id="url" placeholder="https://video.aktualne.cz/…">
     <div class="row" style="margin-top:9px"><button id="load">Načíst článek</button></div>
@@ -1091,7 +1091,7 @@ function zpDraw(ctx,W,H,L,fmt){
   if(sub.length){ ctx.font=`600 ${L.sub.size}px ${ZP.font}`; y+=L.gaps.sub+L.sub.size;
     sub.forEach((l,i)=>{ if(i) y+=L.sub.lead; ctx.fillText(l,L.title.x,y); }); }
   // logo A vpravo nahoře, na horní hraně mřížky 4:5
-  if(ready(OS_IMG.a)) ctx.drawImage(OS_IMG.a,W-L.title.x+L.bar.gap+L.bar.w-L.logoA,L.mark.y,L.logoA,L.logoA);
+  // (logo A ve zpravodajství vyhozeno)
   // barevná linka podél bloku — jen tam, kde panel není v barvě rubriky
   if(look!=="color"){ ctx.fillStyle=R.color; ctx.fillRect(L.title.x-L.bar.gap-L.bar.w, L.block.top, L.bar.w, y-L.block.top+8); }
 }
