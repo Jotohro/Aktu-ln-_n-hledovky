@@ -219,7 +219,7 @@
   </header>
 
   <fieldset>
-    <legend>Článek <span class="hint" id="ver" style="font-weight:400">v 2026-11-13z3</span></legend>
+    <legend>Článek <span class="hint" id="ver" style="font-weight:400">v 2026-11-16a</span></legend>
     <label for="url">Odkaz na článek (klidně zkrácený aktln.cz)</label>
     <input type="url" id="url" placeholder="https://video.aktualne.cz/…">
     <div class="row" style="margin-top:9px"><button id="load">Načíst článek</button></div>
@@ -2423,6 +2423,11 @@ function gridGuide(){
 }
 $("gridGuide").addEventListener("change",gridGuide);
 window.addEventListener("resize",gridGuide);
+// vodítko se přepočítá hned, jak se plátno ukáže nebo změní velikost (přepnutí pořadu/záložky, načtení fotky)
+const gridSoon=()=>requestAnimationFrame(()=>requestAnimationFrame(gridGuide));
+if(window.ResizeObserver){ const ro=new ResizeObserver(gridSoon); Object.values(cvs).forEach(c=>ro.observe(c)); }
+document.querySelectorAll(".tab,.tile").forEach(el=>el.addEventListener("click",gridSoon));
+document.addEventListener("scroll",gridSoon,true);
 /* ořez pro mřížku: střed 4:5 z reelsu, 1080×1350 */
 function downloadGridCrop(fmt){
   const src=cvs[fmt]; const c=document.createElement("canvas"); c.width=1080; c.height=1350;
