@@ -219,7 +219,7 @@
   </header>
 
   <fieldset>
-    <legend>Článek <span class="hint" id="ver" style="font-weight:400">v 2026-11-16b</span></legend>
+    <legend>Článek <span class="hint" id="ver" style="font-weight:400">v 2026-11-18a</span></legend>
     <label for="url">Odkaz na článek (klidně zkrácený aktln.cz)</label>
     <input type="url" id="url" placeholder="https://video.aktualne.cz/…">
     <div class="row" style="margin-top:9px"><button id="load">Načíst článek</button></div>
@@ -961,7 +961,7 @@ function renderStrelDuo(ctx,W,H){
     const size=L.title.size, lead=L.title.lead;
     setArch(ctx,800,size,L.title.wdth);
     lines.forEach((o,i)=>{ ctx.fillStyle=o.red?SR.red:"#fff";
-      archText(ctx,o.text,L.title.cx,(L.title.bottom-lead)+(leadBlank()+i)*lead); });   // začíná nahoře, Enter posouvá dolů
+      archText(ctx,o.text,L.title.cx,(L.title.bottom-2*lead)+(leadBlank()+i)*lead); });   // začíná nahoře, Enter posouvá dolů
   }
   // jméno hosta v červeném boxu, pod ním funkce
   const name=$("first").value.trim();
