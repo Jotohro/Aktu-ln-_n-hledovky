@@ -219,7 +219,7 @@
   </header>
 
   <fieldset>
-    <legend>Článek <span class="hint" id="ver" style="font-weight:400">v 2026-11-18a</span></legend>
+    <legend>Článek <span class="hint" id="ver" style="font-weight:400">v 2026-11-19a</span></legend>
     <label for="url">Odkaz na článek (klidně zkrácený aktln.cz)</label>
     <input type="url" id="url" placeholder="https://video.aktualne.cz/…">
     <div class="row" style="margin-top:9px"><button id="load">Načíst článek</button></div>
@@ -344,6 +344,7 @@
     <button id="dl">Stáhnout tento formát</button>
     <button class="ghost" id="dlAll">Stáhnout vše</button>
     <label class="check" id="gridGuideBox" style="margin:0 6px" title="Instagram ukazuje v mřížce profilu jen prostředních 4:5 (1080×1350) z reelsu"><input type="checkbox" id="gridGuide" checked> Vodítko mřížky 4:5</label>
+    <label class="check" id="gridShiftBox" style="margin:0 6px;display:none" title="Posun výřezu 4:5 pro mřížku profilu (jen Magazín)">Ořez 4:5 <input type="range" id="gridShift" min="0" max="570" step="5" value="285" style="width:110px"> <button class="ghost" id="gridShiftReset" type="button" style="padding:2px 8px">Na střed</button></label>
 
     <button class="ghost" id="copy">Kopírovat do schránky</button>
     <div class="spacer"></div>
@@ -2411,17 +2412,23 @@ $("dl").addEventListener("click",()=>download(S.fmt));
 /* Vodítko mřížky: Instagram v profilu ukazuje z reelsu (1080×1920) jen střed 4:5 = 1080×1350,
    tj. odřízne 285 px nahoře i dole. Překryv se kreslí jen přes reelsové náhledy. */
 const REEL_FMTS=new Set(["reel","sr","sa","sir","mr","or","zr"]);
+const GRID_SHIFT_FMTS=new Set(["mr"]);          // posuvný ořez 4:5 jen u Magazínu
+const GRID_Y={};                                // horní hrana výřezu 4:5 v reelu (výchozí 285 = střed)
+function gridTop(fmt){ return GRID_SHIFT_FMTS.has(fmt)&&GRID_Y[fmt]!=null?GRID_Y[fmt]:285; }
 function gridComp(){ return true; }   // reelsy se skládají pro mřížku 4:5 vždy
 function gridGuide(){
   const o=$("gridOverlay"), c=cvs[S.fmt]; if(!o||!c) return;
   const box=$("gridGuideBox"); if(box) box.style.display=REEL_FMTS.has(S.fmt)?"":"none";   // přepínač jen u reelů
+  const sb=$("gridShiftBox"); if(sb) sb.style.display=GRID_SHIFT_FMTS.has(S.fmt)?"":"none";
   if(!$("gridGuide").checked||!REEL_FMTS.has(S.fmt)){ o.style.display="none"; return; }
   const st=c.parentElement.getBoundingClientRect(), r=c.getBoundingClientRect();
   const k=r.height/1920;
   o.style.display="block"; o.style.left=(r.left-st.left+c.parentElement.scrollLeft)+"px"; o.style.width=r.width+"px";
-  o.style.top=(r.top-st.top+c.parentElement.scrollTop+285*k)+"px"; o.style.height=(1350*k)+"px";
+  o.style.top=(r.top-st.top+c.parentElement.scrollTop+gridTop(S.fmt)*k)+"px"; o.style.height=(1350*k)+"px";
 }
 $("gridGuide").addEventListener("change",gridGuide);
+$("gridShift").addEventListener("input",()=>{ GRID_Y[S.fmt]=+$("gridShift").value; if(!$("gridGuide").checked){ $("gridGuide").checked=true; } gridGuide(); });
+$("gridShiftReset").addEventListener("click",()=>{ GRID_Y[S.fmt]=285; $("gridShift").value=285; gridGuide(); });
 window.addEventListener("resize",gridGuide);
 // vodítko se přepočítá hned, jak se plátno ukáže nebo změní velikost (přepnutí pořadu/záložky, načtení fotky)
 const gridSoon=()=>requestAnimationFrame(()=>requestAnimationFrame(gridGuide));
@@ -2431,7 +2438,7 @@ document.addEventListener("scroll",gridSoon,true);
 /* ořez pro mřížku: střed 4:5 z reelsu, 1080×1350 */
 function downloadGridCrop(fmt){
   const src=cvs[fmt]; const c=document.createElement("canvas"); c.width=1080; c.height=1350;
-  c.getContext("2d").drawImage(src,0,285,1080,1350,0,0,1080,1350);
+  c.getContext("2d").drawImage(src,0,gridTop(fmt),1080,1350,0,0,1080,1350);
   c.toBlob(b=>{ const a=document.createElement("a"); a.href=URL.createObjectURL(b);
     a.download=FILE[fmt](slug()).replace(/reels?/i,"mrizka_4x5")+".jpg"; a.click();
     setTimeout(()=>URL.revokeObjectURL(a.href),2000); },"image/jpeg",0.95);
