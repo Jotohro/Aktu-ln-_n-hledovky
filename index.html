@@ -219,7 +219,7 @@
   </header>
 
   <fieldset>
-    <legend>Článek <span class="hint" id="ver" style="font-weight:400">v 2026-11-19m</span></legend>
+    <legend>Článek <span class="hint" id="ver" style="font-weight:400">v 2026-11-26b</span></legend>
     <label for="url">Odkaz na článek (klidně zkrácený aktln.cz)</label>
     <input type="url" id="url" placeholder="https://video.aktualne.cz/…">
     <div class="row" style="margin-top:9px"><button id="load">Načíst článek</button></div>
@@ -265,6 +265,7 @@
     <details style="margin-top:8px"><summary class="hint" style="cursor:pointer">Pozice prvků</summary>
       <pre id="layPos" style="white-space:pre-wrap;font:12px/1.5 ui-monospace,monospace;background:rgba(255,255,255,.05);padding:8px;border-radius:6px;margin:8px 0 0"></pre>
       <button class="ghost mini" id="layCopy" style="margin-top:6px">Kopírovat pozice</button>
+      <button class="ghost mini" id="layCopyAll" style="margin-top:6px" title="Všechny posuny a velikosti ve všech pořadech – pošli Claudovi, udělá z nich výchozí šablonu">Kopírovat celé nastavení</button>
     </details>
   </fieldset>
 
@@ -1145,7 +1146,7 @@ function renderZpravyWeb(){ const c=cvs.zw; zpDraw(c.getContext("2d"),c.width,c.
    host vlevo (vyříznutý) a Štrunc vpravo (napevno, jde vyměnit). */
 const OS={
   yellow:"#FCCE4F", font:'"Source Sans 3", sans-serif', track:6,
-  web:{ logo:{x:435,y:55,w:1068,h:199}, a:{x:1673,y:93,w:139,h:139},
+  web:{ logo:{x:435,y:55,w:1068,h:199}, a:{x:1691,y:80,w:128,h:128},
         title:{cx:952,first:394,size:80,lead:84}, sub2:{cx:960,first:525,gap:85,size:74,lead:85}, name:{cx:969,first:709,gap:75,size:48,lead:58}, sub:{top:745,size:48,boxH:58,padX:28,baseOff:43},
         host:{right:1920,bottom:1080,h:848}, guest:{w:850,h:844,left:0,bottom:1080} },
   reel:{ logo:{x:241,y:215,w:600,h:112}, a:{x:510,y:120,w:60,h:60},
@@ -1164,7 +1165,7 @@ Object.values(OS_IMG).forEach(i=>i.onload=()=>render());
    LX[formát][prvek] = {dx, dy, k}: posun v px plátna a velikost v %. Pamatuje se v prohlížeči.
    EL() prvek nejdřív „naměří“ (nic nekreslí, jen sbírá obrys), pak ho vykreslí posunutý
    a zvětšený kolem jeho středu; obrys si uloží pro chytání myší v náhledu. */
-let LX=(()=>{ try{ return JSON.parse(localStorage.getItem("pepa_layout")||"null")||{}; }catch(_){ return {}; } })();
+let LX=(()=>{ try{ return JSON.parse(localStorage.getItem("pepa_layout2")||"null")||{}; }catch(_){ return {}; } })();
 const LBOX={}, LLIST={};
 /* posun celé grafiky v reelu (loga a texty najednou, fotky lidí zůstávají), aby se vešla do pevného ořezu 4:5 */
 const GRID_Y=(()=>{ try{ return JSON.parse(localStorage.getItem("pepa_grid2")||"null")||{}; }catch(_){ return {}; } })();
@@ -1173,7 +1174,7 @@ const GRID_REELS=new Set(["reel","sr","sa","sir","mr","or","zr"]), PHOTO_KEYS=ne
 let EL_GY_OFF=false;          // true = celou skupinu už posunul volající (Magazín), EL už nepřidává
 function gridDY(fmt){ return GRID_REELS.has(fmt)&&GRID_Y[fmt]!=null ? GRID_Y[fmt] : 0; }   // posun celé grafiky v px
 function lxGet(fmt,key){ if(!LX[fmt]) LX[fmt]={}; if(!LX[fmt][key]) LX[fmt][key]={dx:0,dy:0,k:100}; return LX[fmt][key]; }
-function lxSave(){ try{ localStorage.setItem("pepa_layout",JSON.stringify(LX)); }catch(_){} }
+function lxSave(){ try{ localStorage.setItem("pepa_layout2",JSON.stringify(LX)); }catch(_){} }
 function lxReg(fmt,key,label){ (LLIST[fmt]=LLIST[fmt]||new Map()).set(key,label); }
 function elMeasure(ctx,fn){
   let x0=Infinity,y0=Infinity,x1=-Infinity,y1=-Infinity; const T0inv=ctx.getTransform().inverse();
@@ -1637,7 +1638,15 @@ function render(){
     if(S.mode==="aktualne"){ renderZpravyReel(); renderZpravyWeb(); }
     if(S.mode==="sranda"){ try{ renderSranda(); renderSrandaYT(); }catch(err){ $("cutSt").textContent="Chyba vykreslení: "+err.message; $("cutSt").className="status err"; } }
     renderYT();
+    drawAktA();
   }); }
+/* Logo A (Aktuálně) ve všech grafikách – kde ho šablona ještě nemá. Jde posunout a zvětšit jako ostatní prvky.
+   Reely: vpravo nahoře uvnitř ořezu 4:5 (ten začíná na y 285). */
+const A_POS={ yt:[27,19,72], reel:[920,310,110], sy:[1185,28,66], sr:[940,320,100], say:[1196,136,63], sa:[924,308,110],
+              sir:[948,1499,100], mr:[920,310,110], zr:[920,310,110], zw:[1760,60,100] };
+const A_SHOW={ spotlight:["yt","reel"], strelnice:["sy","sr"], sranda:["say","sa"], sikana:["sir"], magazin:["mr"], aktualne:["zr","zw"] };
+function drawAktA(){ (A_SHOW[S.mode]||[]).forEach(f=>{ const c=cvs[f]; if(!c) return; const ctx=c.getContext("2d"), [x,y,d]=A_POS[f];
+  EL(ctx,f,"aktA","Logo A",ctx=>drawImgFit(ctx,OS_IMG.a,x,y,d,d)); if(f===S.fmt) layPanel(); }); }
 
 /* ---------- popisky pro sítě ---------- */
 function refreshCaptions(){
@@ -2612,6 +2621,8 @@ $("gridGuide").addEventListener("change",gridGuide);
   $("layCopy").addEventListener("click",async()=>{ const t=layPosText(S.fmt);
     try{ await navigator.clipboard.writeText(t); $("layCopy").textContent="Zkopírováno ✓"; setTimeout(()=>$("layCopy").textContent="Kopírovat pozice",1500); }catch(_){ prompt("Zkopíruj:",t); } });
   document.querySelectorAll(".tab,.tile").forEach(t=>t.addEventListener("click",()=>setTimeout(layPanel,30)));
+  $("layCopyAll").addEventListener("click",async()=>{ const t=JSON.stringify({LX,G:GRID_Y});
+    try{ await navigator.clipboard.writeText(t); $("layCopyAll").textContent="Zkopírováno ✓"; setTimeout(()=>$("layCopyAll").textContent="Kopírovat celé nastavení",1500); }catch(_){ prompt("Zkopíruj:",t); } });
 })();
 $("gridShift").addEventListener("input",()=>{ GRID_Y[S.fmt]=+$("gridShift").value; gridSave(); if(!$("gridGuide").checked){ $("gridGuide").checked=true; } render(); gridGuide(); });
 $("gridShiftReset").addEventListener("click",()=>{ GRID_Y[S.fmt]=0; gridSave(); $("gridShift").value=0; render(); gridGuide(); });
